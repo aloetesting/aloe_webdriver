@@ -3,12 +3,13 @@ import os
 import unittest
 
 from lettuce import world
-from lettuce.core import Step
 from lettuce_webdriver.tests import html_pages
+
 
 def setUp():
     file_path = 'file://%s' % os.path.join(html_pages, 'basic_page.html')
     world.browser.get(file_path)
+
 
 class TestUtil(unittest.TestCase):
     def test_find_by_id(self):

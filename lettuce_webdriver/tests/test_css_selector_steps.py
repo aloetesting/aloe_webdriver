@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from lettuce import world
-from lettuce.core import Feature
+from aloe import world
+from aloe.testing import FeatureTest
 
 from lettuce_webdriver.tests import html_pages
 
@@ -26,21 +26,13 @@ FEATURES = [
             When I go to "%(page)s"
             Then I fill in $("input[name='user']") with "A test string"
             And I check $("input[value='Bike']")
-    """ % {'page': PAGES['basic_page']},    
+    """ % {'page': PAGES['basic_page']},
 ]
 
-class TestUtil(unittest.TestCase):
-    def setUp(self):
-        # Go to an empty page
-        world.browser.get('')
-
+class TestUtil(FeatureTest):
     def test_features(self):
         import lettuce_webdriver.webdriver
         import lettuce_webdriver.css_selector_steps
         for feature_string in FEATURES:
-            f = Feature.from_string(feature_string)
-            feature_result = f.run(failfast=True)
-            scenario_result = feature_result.scenario_results[0]
-            self.assertFalse(scenario_result.steps_failed)
-            self.assertFalse(scenario_result.steps_skipped)
-            self.assertFalse(scenario_result.steps_undefined)
+            result = self.run_feature_string(feature_string)
+            self.assertTrue(result.success)
