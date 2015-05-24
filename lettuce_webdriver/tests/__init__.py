@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 from contextlib import contextmanager
 
@@ -16,3 +18,13 @@ def with_browser(feature):
     world.browser.get('')
     yield
     world.browser.quit()
+
+
+@around.each_step
+@contextmanager
+def print_source(step):
+    try:
+        yield
+    except:
+        print(world.browser.page_source)
+        raise

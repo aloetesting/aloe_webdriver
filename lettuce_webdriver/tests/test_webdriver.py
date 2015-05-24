@@ -2,8 +2,8 @@ import os
 import unittest
 from functools import wraps
 
-from lettuce import world
-from lettuce.core import Feature
+from aloe import world
+from aloe.testing import FeatureTest
 
 from lettuce_webdriver.tests import html_pages
 
@@ -13,14 +13,14 @@ for filename in os.listdir(html_pages):
     PAGES[name] = 'file://%s' % os.path.join(html_pages, filename)
 
 
-def feature(passed=None, failed=0, skipped=0):
+def feature(fails=False):
     """
     Decorate a test method to test the feature contained in its docstring.
 
     Apply the context returned by the method to the feature.
 
     For example:
-        @feature(passed=3)
+        @feature(failed=False)
         def test_some_feature(self):
             '''
             Feature: This name is returned
@@ -31,42 +31,28 @@ def feature(passed=None, failed=0, skipped=0):
             return dict(variable=something)
     """
 
-    assert passed is not None
-
     def outer(func):
         @wraps(func)
         def inner(self):
             import lettuce_webdriver.webdriver
 
             v = func(self)
-            f = Feature.from_string(func.__doc__.format(**v))
-            feature_result = f.run()
-            scenario_result = feature_result.scenario_results[0]
+            feature_string = func.__doc__.format(**v)
 
-            try:
-                self.assertEquals(len(scenario_result.steps_passed), passed)
-                self.assertEquals(len(scenario_result.steps_failed), failed)
-                self.assertEquals(len(scenario_result.steps_skipped), skipped)
-            except AssertionError:
-                print "Failed", scenario_result.steps_failed
-                if scenario_result.steps_failed:
-                    print scenario_result.steps_failed[-1].why.traceback
-                print "Skipped", scenario_result.steps_skipped
-                print world.browser.page_source
+            result = self.run_feature_string(feature_string)
 
-                raise
+            if fails:
+                self.assertFalse(result.success)
+            else:
+                self.assertTrue(result.success)
 
         return inner
 
     return outer
 
 
-class TestUtil(unittest.TestCase):
-    def setUp(self):
-        # Go to an empty page
-        world.browser.get('')
-
-    @feature(passed=5)
+class TestUtil(FeatureTest):
+    @feature()
     def test_I_should_see(self):
         """
 Feature: I should see, I should not see
@@ -80,7 +66,7 @@ Feature: I should see, I should not see
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=3)
+    @feature()
     def test_I_see_a_link(self):
         """
 Feature: I should see a link
@@ -92,7 +78,7 @@ Feature: I should see a link
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=3)
+    @feature()
     def test_see_a_link_containing(self):
         """
 Feature: I should see a link containing
@@ -104,7 +90,7 @@ Feature: I should see a link containing
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=6)
+    @feature()
     def test_basic_page_linking(self):
         """
 Feature: Basic page linking
@@ -122,7 +108,7 @@ Feature: Basic page linking
             'link_dest_page': PAGES['link_dest']
         }
 
-    @feature(passed=4)
+    @feature()
     def test_I_see_a_form(self):
         """
 Feature: I should see a form
@@ -135,7 +121,7 @@ Feature: I should see a form
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=5)
+    @feature()
     def test_I_fill_in_a_form(self):
         """
 Feature: I fill in a form
@@ -149,7 +135,7 @@ Feature: I fill in a form
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4)
+    @feature()
     def test_checkboxes_checked(self):
         """
 Feature: Checkboxes checked
@@ -162,7 +148,7 @@ Feature: Checkboxes checked
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=5)
+    @feature()
     def test_checkboxes_unchecked(self):
         """
 Feature: Checkboxes unchecked
@@ -176,7 +162,7 @@ Feature: Checkboxes unchecked
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=6)
+    @feature()
     def test_combo_boxes(self):
         """
 Feature: Combo boxes
@@ -191,7 +177,7 @@ Feature: Combo boxes
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=1, failed=1)
+    @feature(fails=True)
     def test_combo_boxes_fail(self):
         """
 Feature: Combo boxes fail
@@ -202,7 +188,7 @@ Feature: Combo boxes fail
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=3)
+    @feature()
     def test_multi_combo_boxes(self):
         '''
 Feature: Multi-combo-boxes
@@ -222,7 +208,7 @@ Feature: Multi-combo-boxes
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4)
+    @feature()
     def test_radio_buttons(self):
         """
 Feature: Radio buttons
@@ -235,7 +221,7 @@ Feature: Radio buttons
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4, failed=1, skipped=0)
+    @feature(fails=True)
     def test_hidden_text(self):
         """
 Feature: Hidden text
@@ -249,7 +235,7 @@ Feature: Hidden text
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=2, failed=1, skipped=1)
+    @feature(fails=True)
     def test_hidden_text_2(self):
         """
 Feature: Hidden text 2
@@ -262,7 +248,7 @@ Feature: Hidden text 2
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=5)
+    @feature()
     def test_alert_accept(self):
         """
 Feature: test alert accept
@@ -276,7 +262,7 @@ Feature: test alert accept
 
         return dict(page=PAGES['alert_page'])
 
-    @feature(passed=5)
+    @feature()
     def test_alert_dismiss(self):
         """
 Feature: test alert accept
@@ -290,7 +276,7 @@ Feature: test alert accept
 
         return dict(page=PAGES['alert_page'])
 
-    @feature(passed=6)
+    @feature()
     def test_tooltips(self):
         """
 Feature: test tooltips
@@ -305,7 +291,7 @@ Feature: test tooltips
 
         return dict(page=PAGES['tooltips'])
 
-    @feature(passed=4)
+    @feature()
     def test_labels(self):
         """
 Feature: test labels
@@ -318,7 +304,7 @@ Feature: test labels
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=2, failed=1)
+    @feature(fails=True)
     def test_labels_fail(self):
         """
 Feature: test labels fail
@@ -330,7 +316,7 @@ Feature: test labels fail
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=3)
+    @feature()
     def test_input_values(self):
         """
 Feature: assert value
@@ -342,7 +328,7 @@ Feature: assert value
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=2, failed=1)
+    @feature(fails=True)
     def test_input_values_fail(self):
         """
 Feature: assert value
@@ -354,7 +340,7 @@ Feature: assert value
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=3)
+    @feature()
     def test_date_input(self):
         """
 Feature: assert value
@@ -366,7 +352,7 @@ Feature: assert value
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=2)
+    @feature()
     def test_page_title(self):
         """
 Feature: assert value
@@ -377,7 +363,7 @@ Feature: assert value
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4)
+    @feature()
     def test_submit_only(self):
         """
 Feature: submit only form
@@ -390,7 +376,7 @@ Feature: submit only form
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4)
+    @feature()
     def test_submit_action(self):
         """
 Feature: submit only form
@@ -403,7 +389,7 @@ Feature: submit only form
 
         return dict(page=PAGES['basic_page'])
 
-    @feature(passed=4)
+    @feature()
     def test_submit_id(self):
         """
 Feature: submit only form
