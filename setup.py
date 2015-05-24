@@ -29,8 +29,4 @@ setup(name='lettuce_webdriver',
       tests_require = ['lettuce', 'selenium', 'nose'],
       install_requires=['lettuce','selenium>=2.30.0'],
       test_suite="lettuce_webdriver",
-      entry_points="""
-      [console_scripts]
-      lettuce_webdriver=lettuce_webdriver.parallel_bin:main
-      """
       )
