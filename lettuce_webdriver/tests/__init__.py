@@ -28,4 +28,5 @@ def print_source(step):
         yield
     except:
         print(world.browser.page_source)
+        print(world.browser.get_screenshot_as_base64())
         raise
