@@ -2,16 +2,22 @@
 import os
 import unittest
 
+from selenium import webdriver
+
 from lettuce import world
 from lettuce_webdriver.tests import html_pages
 
 
-def setUp():
-    file_path = 'file://%s' % os.path.join(html_pages, 'basic_page.html')
-    world.browser.get(file_path)
-
-
 class TestUtil(unittest.TestCase):
+    def setUp(self):
+        file_path = 'file://%s' % os.path.join(html_pages, 'basic_page.html')
+        world.browser = webdriver.Firefox()
+        world.browser.get(file_path)
+
+    def tearDown(self):
+        world.browser.quit()
+        delattr(world, 'browser')
+
     def test_find_by_id(self):
         from lettuce_webdriver.util import find_field_by_id
         assert find_field_by_id(world.browser, 'password', 'pass')

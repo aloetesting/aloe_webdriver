@@ -18,6 +18,7 @@ def with_browser(feature):
     world.browser.get('')
     yield
     world.browser.quit()
+    delattr(world, 'browser')
 
 
 @around.each_step
