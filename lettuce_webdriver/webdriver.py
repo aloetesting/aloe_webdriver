@@ -12,6 +12,12 @@ from lettuce_webdriver.util import (assert_true,
                                     option_in_select,
                                     wait_for)
 
+from nose.tools import (
+    assert_equal,
+    assert_in,
+    assert_not_in,
+)
+
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.keys import Keys
@@ -20,8 +26,6 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     NoAlertPresentException,
     WebDriverException)
-
-from nose.tools import assert_equals
 
 # pylint:disable=missing-docstring,redefined-outer-name
 
@@ -169,23 +173,23 @@ def should_not_see(step, text):
 
 @step('I should be at "(.*?)"$')
 def url_should_be(step, url):
-    assert_true(step, url == world.browser.current_url)
+    assert_equal(url, world.browser.current_url)
 
 
 ## Browser
 @step('The browser\'s URL should be "(.*?)"$')
 def browser_url_should_be(step, url):
-    assert_true(step, url == world.browser.current_url)
+    assert_equal(url, world.browser.current_url)
 
 
 @step('The browser\'s URL should contain "(.*?)"$')
 def url_should_contain(step, url):
-    assert_true(step, url in world.browser.current_url)
+    assert_in(url, world.browser.current_url)
 
 
 @step('The browser\'s URL should not contain "(.*?)"$')
 def url_should_not_contain(step, url):
-    assert_true(step, url not in world.browser.current_url)
+    assert_not_in(url, world.browser.current_url)
 
 
 ## Forms
@@ -280,6 +284,7 @@ def element_not_focused(step, id):
     elem = world.browser.find_element_by_xpath(str('id("{id}")'.format(id=id)))
     focused = world.browser.switch_to_active_element()
 
+    # Elements don't have __ne__ defined, cannot test for inequality
     assert_false(step, elem == focused)
 
 
@@ -294,7 +299,7 @@ def input_has_value(step, field_name, value):
                                     field_name)
         assert_false(step, text_field is False,
                      'Can not find a field named "%s"' % field_name)
-        assert_equals(text_field.get_attribute('value'), value)
+        assert_equal(text_field.get_attribute('value'), value)
 
 
 @step(r'I submit the only form')
@@ -469,7 +474,7 @@ def check_alert(step, text):
 
     try:
         alert = Alert(world.browser)
-        assert_equals(alert.text, text)
+        assert_equal(alert.text, text)
     except WebDriverException:
         # PhantomJS is kinda poor
         pass
@@ -540,7 +545,7 @@ def page_title(step, title):
     """
 
     with AssertContextManager(step):
-        assert_equals(world.browser.title, title)
+        assert_equal(world.browser.title, title)
 
 
 @step(r'I switch to the frame with id "([^"]*)"')
