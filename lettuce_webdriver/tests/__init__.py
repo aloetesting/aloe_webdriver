@@ -5,20 +5,25 @@ from contextlib import contextmanager
 
 from selenium import webdriver
 
-from aloe import around, world
+from aloe import around, before, world
 
 here = os.path.dirname(__file__)
 html_pages = os.path.join(here, 'html_pages')
 
 
-@around.each_feature
+@around.all
 @contextmanager
-def with_browser(feature):
+def with_browser():
     world.browser = webdriver.Firefox()
     world.browser.get('')
     yield
     world.browser.quit()
     delattr(world, 'browser')
+
+
+@before.each_feature
+def reset_page(feature):
+    world.browser.get('')
 
 
 @around.each_step
