@@ -3,14 +3,21 @@ from time import sleep
 from lettuce import step
 from lettuce import world
 
-from lettuce_webdriver.util import (assert_true,
-                                    assert_false,
-                                    wait_for)
+from lettuce_webdriver.util import (
+    wait_for,
+)
+
+from nose.tools import (
+    assert_equal,
+    assert_false,
+    assert_true,
+)
 
 from selenium.common.exceptions import WebDriverException
 
 import logging
 log = logging.getLogger(__name__)
+
 
 @wait_for
 def wait_for_elem(browser, sel):
@@ -50,7 +57,7 @@ def find_elements_by_jquery(browser, selector):
 def find_element_by_jquery(step, browser, selector):
     """Find a single HTML element using jQuery-style selectors."""
     elements = find_elements_by_jquery(browser, selector)
-    assert_true(step, len(elements) > 0)
+    assert_true(len(elements) > 0)
     return elements[0]
 
 
@@ -71,19 +78,19 @@ def find_parents_by_jquery(browser, selector):
 @step(r'There should be an element matching \$\("(.*?)"\)$')
 def check_element_by_selector(step, selector):
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_true(step, elems)
+    assert_true(elems)
 
 
 @step(r'There should be an element matching \$\("(.*?)"\) within (\d+) seconds?$')
 def wait_for_element_by_selector(step, selector, seconds):
     elems = wait_for_elem(world.browser, selector, timeout=int(seconds))
-    assert_true(step, elems)
+    assert_true(elems)
 
 
 @step(r'There should be exactly (\d+) elements matching \$\("(.*?)"\)$')
 def count_elements_exactly_by_selector(step, number, selector):
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_true(step, len(elems) == int(number))
+    assert_equal(len(elems), int(number))
 
 
 @step(r'I fill in \$\("(.*?)"\) with "(.*?)"$')
@@ -124,24 +131,25 @@ def click_by_selector(step, selector):
 def click_by_selector(step, selector):
     # No need for separate button press step with selector style.
     elem = find_element_by_jquery(step, world.browser, selector)
-    assert_true(step, elem.is_selected())
+    assert_true(elem.is_selected())
 
 
 @step(r'I select \$\("(.*?)"\)$')
 def select_by_selector(step, selector):
     option = find_element_by_jquery(step, world.browser, selector)
     selectors = find_parents_by_jquery(world.browser, selector)
-    assert_true(step, len(selectors) > 0)
+    assert_true(len(selectors) > 0)
     selector = selectors[0]
     selector.click()
     sleep(0.3)
     option.click()
-    assert_true(step, option.is_selected())
+    assert_true(option.is_selected())
+
 
 @step(r'There should not be an element matching \$\("(.*?)"\)$')
 def check_element_by_selector(step, selector):
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_false(step, elems)
+    assert_false(elems)
 
 __all__ = [
     'wait_for_element_by_selector',
