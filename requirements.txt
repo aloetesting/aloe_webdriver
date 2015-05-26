@@ -1,3 +1,4 @@
 aloe
+future
 nose
 selenium

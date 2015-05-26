@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
 import os
 import unittest
 
@@ -41,7 +47,7 @@ class TestUtil(unittest.TestCase):
         assert find_field(world.browser, 'text', 'username')
         assert find_field(world.browser, 'text', 'Username:')
         assert find_field(world.browser, 'text', 'user')
-        assert find_field(world.browser, 'text', u'ชื่อ:')
+        assert find_field(world.browser, 'text', 'ชื่อ:')
 
     def test_find_button(self):
         from lettuce_webdriver.util import find_button
@@ -49,12 +55,12 @@ class TestUtil(unittest.TestCase):
         assert find_button(world.browser, 'Submit!')
         assert find_button(world.browser, 'submit_tentative')
         assert find_button(world.browser, 'Submit as tentative')
-        assert find_button(world.browser, u'ส่งฟอร์ม')
+        assert find_button(world.browser, 'ส่งฟอร์ม')
 
     def test_option_in_select(self):
         from lettuce_webdriver.util import option_in_select
         assert option_in_select(world.browser, 'Favorite Colors:', 'Blue')
-        assert option_in_select(world.browser, 'Favorite Colors:', u'ฟ้า')
+        assert option_in_select(world.browser, 'Favorite Colors:', 'ฟ้า')
 
     def test_wait_for(self):
         from lettuce_webdriver.util import wait_for

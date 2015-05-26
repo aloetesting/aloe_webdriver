@@ -1,5 +1,13 @@
 """Webdriver support for lettuce"""
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+# pylint:disable=redefined-builtin
+from builtins import str
+# pylint:enable=redefined-builtin
+
 from lettuce import step, world
 
 from lettuce_webdriver.util import (
@@ -30,7 +38,7 @@ from selenium.common.exceptions import (
 
 # pylint:disable=missing-docstring,redefined-outer-name
 
-from css_selector_steps import *
+from lettuce_webdriver.css_selector_steps import *
 
 
 def contains_content(browser, content):
@@ -38,9 +46,9 @@ def contains_content(browser, content):
     #  for in it or its subelements, but whose children do NOT contain that
     #  text - otherwise matches <body> or <html> or other similarly useless
     #  things.
-    for elem in browser.find_elements_by_xpath(unicode(
-            u'//*[contains(normalize-space(.),"{content}") '
-            u'and not(./*[contains(normalize-space(.),"{content}")])]'
+    for elem in browser.find_elements_by_xpath(str(
+            '//*[contains(normalize-space(.),"{content}") '
+            'and not(./*[contains(normalize-space(.),"{content}")])]'
             .format(content=content))):
 
         try:

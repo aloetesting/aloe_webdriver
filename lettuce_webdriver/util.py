@@ -1,8 +1,20 @@
 """Utility functions that combine steps to locate elements"""
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+# pylint:disable=redefined-builtin
+from builtins import str
+# pylint:enable=redefined-builtin
+
 import operator
 from time import time, sleep
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
 
 from selenium.common.exceptions import NoSuchElementException
 
@@ -198,7 +210,7 @@ def find_field_by_name(browser, field, name):
 
 def find_field_by_value(browser, field, name):
     xpath = field_xpath(field, 'value')
-    elems = [elem for elem in XPathSelector(browser, unicode(xpath % name))
+    elems = [elem for elem in XPathSelector(browser, str(xpath % name))
              if elem.is_displayed() and elem.is_enabled()]
 
     # sort by shortest first (most closely matching)
@@ -224,7 +236,7 @@ def find_field_by_label(browser, field, label):
 
     return XPathSelector(browser,
                          field_xpath(field, 'id', escape=False) %
-                         u'//label[contains(., "{0}")]/@for'.format(label))
+                         '//label[contains(., "{0}")]/@for'.format(label))
 
 
 def option_in_select(browser, select_name, option):
@@ -239,7 +251,7 @@ def option_in_select(browser, select_name, option):
     assert select
 
     try:
-        return select.find_element_by_xpath(unicode(
+        return select.find_element_by_xpath(str(
             './/option[normalize-space(text()) = "%s"]' % option))
     except NoSuchElementException:
         return None

@@ -47,7 +47,7 @@ def find_elements_by_jquery(browser, selector):
     try:
         return browser.execute_script("""return ($ || jQuery)(arguments[0]).get();""", selector)
     except WebDriverException as e:
-        if e.msg.startswith(u'$ is not defined'):
+        if e.msg.startswith('$ is not defined'):
             load_script(browser, "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
             return browser.execute_script("""return ($ || jQuery)(arguments[0]).get();""", selector)
         else:
@@ -68,7 +68,7 @@ def find_parents_by_jquery(browser, selector):
     try:
         return browser.execute_script("""return ($ || jQuery)(arguments[0]).parent().get();""", selector)
     except WebDriverException as e:
-        if e.msg.startswith(u'$ is not defined'):
+        if e.msg.startswith('$ is not defined'):
             load_script(browser, "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
             return browser.execute_script("""return ($ || jQuery)(arguments[0]).parent().get();""", selector)
         else:
