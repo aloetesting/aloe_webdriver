@@ -21,5 +21,5 @@ def visit_page(self, page):
 
     testclass = self.testclass
     base_url = testclass.live_server_url.__get__(testclass)
-    url = urljoin(base_url, url)
+    url = urljoin(base_url, page)
     self.given('I visit "%s"' % url)
