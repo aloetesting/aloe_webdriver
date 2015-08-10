@@ -375,6 +375,7 @@ def select_single_item(step, option_name, select_name):
 
 
 @step('I select the following from "([^"]*?)":?$')
+@step("I select the following from '([^']*?)':?$")
 def select_multi_items(step, select_name):
     # Ensure only the options selected are actually selected
     option_names = step.multiline.split('\n')
@@ -390,13 +391,15 @@ def select_multi_items(step, select_name):
             select.select_by_visible_text(option)
 
 
-@step('The "(.*?)" option from "(.*?)" should be selected$')
+@step('The "([^"]*)" option from "([^"]*)" should be selected$')
+@step("The '([^']*)' option from '([^']*)' should be selected$")
 def assert_single_selected(step, option_name, select_name):
     option_box = find_option(world.browser, select_name, option_name)
     assert_true(option_box.is_selected())
 
 
 @step('The following options from "([^"]*?)" should be selected:?$')
+@step("The following options from '([^']*?)' should be selected:?$")
 def assert_multi_selected(step, select_name):
     # Ensure its not selected unless its one of our options
     option_names = step.multiline.split('\n')
@@ -413,29 +416,33 @@ def assert_multi_selected(step, select_name):
 
 
 @step(r'I should see option "([^"]*)" in selector "([^"]*)"')
+@step(r"I should see option '([^']*)' in selector '([^']*)'")
 def select_contains(step, option, id_):
     assert_true(option_in_select(world.browser, id_, option) is not None)
 
 
 @step(r'I should not see option "([^"]*)" in selector "([^"]*)"')
+@step(r"I should not see option '([^']*)' in selector '([^']*)'")
 def select_does_not_contain(step, option, id_):
     assert_true(option_in_select(world.browser, id_, option) is None)
 
 
-# Radios
-@step('I choose "(.*?)"$')
+@step('I choose "([^"]*)"$')
+@step("I choose '([^']*)'$")
 def choose_radio(step, value):
     box = find_field(world.browser, 'radio', value)
     box.click()
 
 
-@step('The "(.*?)" option should be chosen$')
+@step('The "([^"]*)" option should be chosen$')
+@step("The '([^']*)' option should be chosen$")
 def assert_radio_selected(step, value):
     box = find_field(world.browser, 'radio', value)
     assert_true(box.is_selected())
 
 
-@step('The "(.*?)" option should not be chosen$')
+@step('The "([^"]*)" option should not be chosen$')
+@step("The '([^']*)' option should not be chosen$")
 def assert_radio_not_selected(step, value):
     box = find_field(world.browser, 'radio', value)
     assert_false(box.is_selected())
@@ -471,6 +478,7 @@ def dismiss_alert(step):
 
 
 @step(r'I should see an alert with text "([^"]*)"')
+@step(r"I should see an alert with text '([^']*)'")
 def check_alert(step, text):
     """
     Check the alert text
@@ -498,39 +506,41 @@ def check_no_alert(step):
         pass
 
 
-# Tooltips
 @step(r'I should see an element with tooltip "([^"]*)"')
+@step(r"I should see an element with tooltip '([^']*)'")
 def see_tooltip(step, tooltip):
     """
     Press a button having a given tooltip.
     """
     elem = world.browser.find_elements_by_xpath(str(
-        '//*[@title="%(tooltip)s" or @data-original-title="%(tooltip)s"]' %
-        dict(tooltip=tooltip)))
+        '//*[@title=%(tooltip)s or @data-original-title=%(tooltip)s]' %
+        dict(tooltip=string_literal(tooltip))))
     elem = [e for e in elem if e.is_displayed()]
     assert_true(elem)
 
 
 @step(r'I should not see an element with tooltip "([^"]*)"')
+@step(r"I should not see an element with tooltip '([^']*)'")
 def no_see_tooltip(step, tooltip):
     """
     Press a button having a given tooltip.
     """
     elem = world.browser.find_elements_by_xpath(str(
-        '//*[@title="%(tooltip)s" or @data-original-title="%(tooltip)s"]' %
-        dict(tooltip=tooltip)))
+        '//*[@title=%(tooltip)s or @data-original-title=%(tooltip)s]' %
+        dict(tooltip=string_literal(tooltip))))
     elem = [e for e in elem if e.is_displayed()]
     assert_false(elem)
 
 
 @step(r'I (?:click|press) the element with tooltip "([^"]*)"')
+@step(r"I (?:click|press) the element with tooltip '([^']*)'")
 def press_by_tooltip(step, tooltip):
     """
     Press a button having a given tooltip.
     """
     for button in world.browser.find_elements_by_xpath(str(
-        '//*[@title="%(tooltip)s" or @data-original-title="%(tooltip)s"]' %
-            dict(tooltip=tooltip))):
+        '//*[@title=%(tooltip)s or @data-original-title=%(tooltip)s]' %
+            dict(tooltip=string_literal(tooltip)))):
         try:
             button.click()
             break
@@ -542,6 +552,7 @@ def press_by_tooltip(step, tooltip):
 
 
 @step(r'The page title should be "([^"]*)"')
+@step(r"The page title should be '([^']*)'")
 def page_title(step, title):
     """
     Check that the page title matches the given one.
