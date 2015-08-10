@@ -17,6 +17,7 @@ from lettuce_webdriver.util import (
     find_option,
     option_in_select,
     wait_for,
+    string_literal,
 )
 
 from nose.tools import (
@@ -49,19 +50,10 @@ def contains_content(browser, content):
     things.
     """
 
-    # choose a string literal that can wrap our string
-    if '"' in content and "'" in content:
-        # there is no way to escape string literal characters in XPath
-        raise ValueError("Cannot represent this string in XPath")
-    elif '"' in content:  # if it contains " wrap it in '
-        content = "'%s'" % content
-    else:  # wrap it in "
-        content = '"%s"' % content
-
     for elem in browser.find_elements_by_xpath(str(
             '//*[contains(normalize-space(.), {content}) '
             'and not(./*[contains(normalize-space(.), {content})])]'
-            .format(content=content))):
+            .format(content=string_literal(content)))):
 
         try:
             if elem.is_displayed():
@@ -169,21 +161,21 @@ def should_not_see_id(step, element_id):
 
 
 @step(r'I should see "([^"]+)" within (\d+) seconds?$')
+@step(r"I should see '([^']+)' within (\d+) seconds?$")
 def should_see_in_seconds(step, text, timeout):
     assert_true(wait_for_content(world.browser, text, timeout=int(timeout)))
 
 
 @step('I should see "([^"]+)"$')
-def should_see(step, text):
-    assert_true(contains_content(world.browser, text))
-
-
+@step("I should see '([^']+)'$")
 @step('I see "([^"]+)"$')
+@step("I see '([^']+)'$")
 def see(step, text):
     assert_true(contains_content(world.browser, text))
 
 
 @step('I should not see "([^"]+)"$')
+@step("I should not see '([^']+)'$")
 def should_not_see(step, text):
     assert_false(contains_content(world.browser, text))
 

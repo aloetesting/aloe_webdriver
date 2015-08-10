@@ -22,6 +22,20 @@ from selenium.common.exceptions import NoSuchElementException
 # pylint:disable=invalid-name
 
 
+def string_literal(content):
+    """Choose a string literal that can wrap our string"""
+
+    if '"' in content and "'" in content:
+        # there is no way to escape string literal characters in XPath
+        raise ValueError("Cannot represent this string in XPath")
+    elif '"' in content:  # if it contains " wrap it in '
+        content = "'%s'" % content
+    else:  # wrap it in "
+        content = '"%s"' % content
+
+    return content
+
+
 class XPathSelector(object):
     """
     A set of elements on a page matching an XPath query.
