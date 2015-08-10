@@ -3,7 +3,7 @@ import unittest
 from functools import wraps
 
 from aloe import world
-from aloe.testing import FeatureTest
+from aloe.testing import FeatureTest, in_directory
 
 from lettuce_webdriver.tests import html_pages
 
@@ -33,9 +33,8 @@ def feature(fails=False):
 
     def outer(func):
         @wraps(func)
+        @in_directory('tests')
         def inner(self):
-            import lettuce_webdriver.webdriver
-
             v = func(self)
             feature_string = func.__doc__.format(**v)
 
