@@ -86,42 +86,45 @@ def goto(step, url):
 
 
 # Links
-@step('I click "(.*?)"$')
+@step('I click "([^"]*)"$')
+@step("I click '([^']*)'$")
 def click(step, name):
     elem = world.browser.find_element_by_link_text(name)
     elem.click()
 
 
-@step('I should see a link with the url "(.*?)"$')
+@step('I should see a link with the url "([^"]*)"$')
 def should_see_link(step, link_url):
     assert_true(world.browser.
                 find_element_by_xpath(str('//a[@href="%s"]' % link_url)))
 
 
-@step('I should see a link to "(.*?)" with the url "(.*?)"$')
+@step('I should see a link to "([^"]*)" with the url "([^"]*)"$')
+@step("I should see a link to '([^']*)' with the url '([^']*)'$")
 def should_see_link_text(step, link_text, link_url):
     assert_true(world.browser.find_element_by_xpath(str(
-                    '//a[@href="%s"][./text()="%s"]' %
-                    (link_url, link_text))))
+                    '//a[@href="%s"][./text()=%s]' %
+                    (link_url, string_literal(link_text)))))
 
 
-@step('I should see a link that contains the text "(.*?)" '
-      'and the url "(.*?)"$')
+@step('I should see a link that contains the text "([^"]*)" and the url "([^"]*)"$')
+@step("I should see a link that contains the text '([^']*)' and the url '([^']*)'$")
 def should_include_link_text(step, link_text, link_url):
     return world.browser.find_element_by_xpath(str(
-        '//a[@href="%s"][contains(., "%s")]' %
-        (link_url, link_text)))
+        '//a[@href="%s"][contains(., %s)]' %
+        (link_url, string_literal(link_text))))
 
 
-# General
-@step('The element with id of "(.*?)" contains "(.*?)"$')
+@step('The element with id of "([^"]*)" contains "([^"]*)"$')
+@step("The element with id of '([^']*)' contains '([^']*)'$")
 def element_contains(step, element_id, value):
     return world.browser.find_element_by_xpath(str(
         'id("{id}")[contains(., "{value}")]'.format(
             id=element_id, value=value)))
 
 
-@step('The element with id of "(.*?)" does not contain "(.*?)"$')
+@step('The element with id of "([^"]*)" does not contain "([^"]*)"$')
+@step("The element with id of '([^']*)' does not contain '([^']*)'$")
 def element_not_contains(step, element_id, value):
     elem = world.browser.find_elements_by_xpath(str(
         'id("{id}")[contains(., "{value}")]'.format(
@@ -137,20 +140,20 @@ def wait_for_visible_elem(browser, xpath):
     return elem[0].is_displayed()
 
 
-@step(r'I should see an element with id of "(.*?)" within (\d+) seconds?$')
+@step(r'I should see an element with id of "([^"]*)" within (\d+) seconds?$')
 def should_see_id_in_seconds(step, element_id, timeout):
     elem = wait_for_visible_elem(world.browser, 'id("%s")' % element_id,
                                  timeout=int(timeout))
     assert_true(elem)
 
 
-@step('I should see an element with id of "(.*?)"$')
+@step('I should see an element with id of "([^"]*)"$')
 def should_see_id(step, element_id):
     elem = world.browser.find_element_by_xpath(str('id("%s")' % element_id))
     assert_true(elem.is_displayed())
 
 
-@step('I should not see an element with id of "(.*?)"$')
+@step('I should not see an element with id of "([^"]*)"$')
 def should_not_see_id(step, element_id):
     try:
         elem = world.browser.find_element_by_xpath(str('id("%s")' %
@@ -180,29 +183,24 @@ def should_not_see(step, text):
     assert_false(contains_content(world.browser, text))
 
 
-@step('I should be at "(.*?)"$')
+@step('I should be at "([^"]*)"$')
+@step('The browser\'s URL should be "([^"]*)"$')
 def url_should_be(step, url):
     assert_equal(url, world.browser.current_url)
 
 
-# Browser
-@step('The browser\'s URL should be "(.*?)"$')
-def browser_url_should_be(step, url):
-    assert_equal(url, world.browser.current_url)
-
-
-@step('The browser\'s URL should contain "(.*?)"$')
+@step('''The browser's URL should contain "([^"]*)"$''')
 def url_should_contain(step, url):
     assert_in(url, world.browser.current_url)
 
 
-@step('The browser\'s URL should not contain "(.*?)"$')
+@step('''The browser's URL should not contain "([^"]*)"$''')
 def url_should_not_contain(step, url):
     assert_not_in(url, world.browser.current_url)
 
 
 # Forms
-@step('I should see a form that goes to "(.*?)"$')
+@step('I should see a form that goes to "([^"]*)"$')
 def see_form(step, url):
     return world.browser.find_element_by_xpath(str('//form[@action="%s"]' %
                                                    url))
@@ -231,7 +229,8 @@ TEXT_FIELDS = (
 )
 
 
-@step('I fill in "(.*?)" with "(.*?)"$')
+@step('I fill in "([^"]*)" with "([^"]*)"$')
+@step("I fill in '([^']*)' with '([^']*)'$")
 def fill_in_textfield(step, field_name, value):
     date_field = find_any_field(world.browser,
                                 DATE_FIELDS,
@@ -252,20 +251,22 @@ def fill_in_textfield(step, field_name, value):
     field.send_keys(value)
 
 
-@step('I press "(.*?)"$')
+@step('I press "([^"]*)"$')
+@step("I press '([^']*)'$")
 def press_button(step, value):
     button = find_button(world.browser, value)
     button.click()
 
 
 @step('I click on label "([^"]*)"')
+@step("I click on label '([^']*)'")
 def click_on_label(step, label):
     """
     Click on a label
     """
 
     elem = world.browser.find_element_by_xpath(str(
-        '//label[normalize-space(text()) = "%s"]' % label))
+        '//label[normalize-space(text())=%s]' % string_literal(label)))
     elem.click()
 
 
@@ -295,6 +296,7 @@ def element_not_focused(step, id):
 
 
 @step(r'Input "([^"]*)" (?:has|should have) value "([^"]*)"')
+@step(r"Input '([^']*)' (?:has|should have) value '([^']*)'")
 def input_has_value(step, field_name, value):
     """
     Check that the form input element has given value.
@@ -335,35 +337,38 @@ def submit_form_action(step, url):
     form.submit()
 
 
-# Checkboxes
-@step('I check "(.*?)"$')
+@step('I check "([^"]*)"$')
+@step("I check '([^']*)'$")
 def check_checkbox(step, value):
     check_box = find_field(world.browser, 'checkbox', value)
     if not check_box.is_selected():
         check_box.click()
 
 
-@step('I uncheck "(.*?)"$')
+@step('I uncheck "([^"]*)"$')
+@step("I uncheck '([^']*)'$")
 def uncheck_checkbox(step, value):
     check_box = find_field(world.browser, 'checkbox', value)
     if check_box.is_selected():
         check_box.click()
 
 
-@step('The "(.*?)" checkbox should be checked$')
+@step('The "([^"]*)" checkbox should be checked$')
+@step("The '([^']*)' checkbox should be checked$")
 def assert_checked_checkbox(step, value):
     check_box = find_field(world.browser, 'checkbox', value)
     assert_true(check_box.is_selected())
 
 
-@step('The "(.*?)" checkbox should not be checked$')
+@step('The "([^"]*)" checkbox should not be checked$')
+@step("The '([^']*)' checkbox should not be checked$")
 def assert_not_checked_checkbox(step, value):
     check_box = find_field(world.browser, 'checkbox', value)
     assert_false(check_box.is_selected())
 
 
-# Selectors
-@step('I select "(.*?)" from "(.*?)"$')
+@step('I select "([^"]*)" from "([^"]*)"$')
+@step("I select '([^']*)' from '([^']*)'$")
 def select_single_item(step, option_name, select_name):
     option_box = find_option(world.browser, select_name, option_name)
     option_box.click()
