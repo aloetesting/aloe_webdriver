@@ -42,13 +42,25 @@ from lettuce_webdriver.css_selector_steps import *
 
 
 def contains_content(browser, content):
-    # Search for an element that contains the whole of the text we're looking
-    #  for in it or its subelements, but whose children do NOT contain that
-    #  text - otherwise matches <body> or <html> or other similarly useless
-    #  things.
+    """
+    Search for an element that contains the whole of the text we're looking
+    for in it or its subelements, but whose children do NOT contain that
+    text - otherwise matches <body> or <html> or other similarly useless
+    things.
+    """
+
+    # choose a string literal that can wrap our string
+    if '"' in content and "'" in content:
+        # there is no way to escape string literal characters in XPath
+        raise ValueError("Cannot represent this string in XPath")
+    elif '"' in content:  # if it contains " wrap it in '
+        content = "'%s'" % content
+    else:  # wrap it in "
+        content = '"%s"' % content
+
     for elem in browser.find_elements_by_xpath(str(
-            '//*[contains(normalize-space(.),"{content}") '
-            'and not(./*[contains(normalize-space(.),"{content}")])]'
+            '//*[contains(normalize-space(.), {content}) '
+            'and not(./*[contains(normalize-space(.), {content})])]'
             .format(content=content))):
 
         try:
