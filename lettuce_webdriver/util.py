@@ -137,30 +137,34 @@ class XPathSelector(object):
 def element_id_by_label(browser, label):
     """Return the id of a label's for attribute"""
     label = XPathSelector(browser,
-                          str('//label[contains(., "%s")]' % label))
+                          str('//label[contains(., %s)]' %
+                              string_literal(label)))
     if not label:
         return False
     return label.get_attribute('for')
 
 
-# Field helper functions to locate select, textarea, and the other
-# types of input fields (text, checkbox, radio)
-def field_xpath(field, attribute, escape=True):
-    if escape:
-        value = '"%s"'
-    else:
-        value = '%s'
+def field_xpath(field, attribute):
+    """
+    Field helper functions to locate select, textarea, and the other
+    types of input fields (text, checkbox, radio)
+    """
     if field in ['select', 'textarea']:
-        return './/%s[@%s=%s]' % (field, attribute, value)
+        xpath = './/{field}[@{attr}=%s]'
+
     elif field == 'button':
         if attribute == 'value':
-            return './/%s[contains(., %s)]' % (field, value)
+            xpath = './/{field}[contains(., %s)]'
         else:
-            return './/%s[@%s=%s]' % (field, attribute, value)
+            xpath = './/{field}[@{attr}=%s]'
+
     elif field == 'option':
-        return './/%s[@%s=%s]' % (field, attribute, value)
+        xpath = './/{field}[@{attr}=%s]'
+
     else:
-        return './/input[@%s=%s][@type="%s"]' % (attribute, value, field)
+        xpath = './/input[@{attr}=%s][@type="{field}"]'
+
+    return xpath.format(field=field, attr=attribute)
 
 
 def find_button(browser, value):
@@ -215,16 +219,17 @@ def find_any_field(browser, field_types, field_name):
 
 
 def find_field_by_id(browser, field, id):
-    return XPathSelector(browser, field_xpath(field, 'id') % id)
+    return XPathSelector(browser, field_xpath(field, 'id') % string_literal(id))
 
 
 def find_field_by_name(browser, field, name):
-    return XPathSelector(browser, field_xpath(field, 'name') % name)
+    return XPathSelector(browser, field_xpath(field, 'name') % \
+                         string_literal(name))
 
 
 def find_field_by_value(browser, field, name):
-    xpath = field_xpath(field, 'value')
-    elems = [elem for elem in XPathSelector(browser, str(xpath % name))
+    xpath = field_xpath(field, 'value') % string_literal(name)
+    elems = [elem for elem in XPathSelector(browser, str(xpath))
              if elem.is_displayed() and elem.is_enabled()]
 
     # sort by shortest first (most closely matching)
@@ -249,8 +254,9 @@ def find_field_by_label(browser, field, label):
     """
 
     return XPathSelector(browser,
-                         field_xpath(field, 'id', escape=False) %
-                         '//label[contains(., "{0}")]/@for'.format(label))
+                         field_xpath(field, 'id') %
+                         '//label[contains(., {0})]/@for'.format(
+                             string_literal(label)))
 
 
 def option_in_select(browser, select_name, option):
@@ -266,7 +272,7 @@ def option_in_select(browser, select_name, option):
 
     try:
         return select.find_element_by_xpath(str(
-            './/option[normalize-space(text()) = "%s"]' % option))
+            './/option[normalize-space(text())=%s]' % string_literal(option)))
     except NoSuchElementException:
         return None
 
