@@ -2,7 +2,7 @@ import os
 import unittest
 
 from aloe import world
-from aloe.testing import FeatureTest
+from aloe.testing import FeatureTest, in_directory
 
 from lettuce_webdriver.tests import html_pages
 
@@ -29,10 +29,9 @@ FEATURES = [
     """ % {'page': PAGES['basic_page']},
 ]
 
+@in_directory('tests')
 class TestUtil(FeatureTest):
     def test_features(self):
-        import lettuce_webdriver.webdriver
-        import lettuce_webdriver.css_selector_steps
         for feature_string in FEATURES:
             result = self.run_feature_string(feature_string)
             self.assertTrue(result.success)
