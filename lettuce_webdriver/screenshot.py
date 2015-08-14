@@ -2,7 +2,7 @@
 
 import uuid
 
-from lettuce import (
+from aloe import (
     after,
     step,
     world,
@@ -12,7 +12,7 @@ import json
 
 def set_save_directory(base, source):
     """Sets the root save directory for saving screenshots.
-    
+
     Screenshots will be saved in subdirectories under this directory by
     browser window size. """
     root = os.path.join(base, source)

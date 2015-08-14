@@ -8,7 +8,7 @@ from __future__ import absolute_import
 from builtins import str
 # pylint:enable=redefined-builtin
 
-from lettuce import step, world
+from aloe import step, world
 
 from lettuce_webdriver.util import (
     find_any_field,

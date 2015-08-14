@@ -7,7 +7,7 @@ try:
 except ImportError:
     from urlparse import urljoin
 
-from lettuce import step
+from aloe import step
 
 # make sure the steps are loaded
 import lettuce_webdriver.webdriver  # pylint:disable=unused-import

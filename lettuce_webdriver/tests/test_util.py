@@ -10,7 +10,7 @@ import unittest
 
 from selenium import webdriver
 
-from lettuce import world
+from aloe import world
 from lettuce_webdriver.tests import html_pages
 
 
