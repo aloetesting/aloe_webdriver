@@ -1,5 +1,5 @@
 Aloe steps for Web Testing with Selenium
-----------------------------------------
+========================================
 
 A set of [Gherkin][gherkin] steps for use with [Aloe][aloe] to test Web
 applications using Selenium.
@@ -8,7 +8,7 @@ Based on [lettuce_webdriver](lettuce_webdriver) which, in turn, is inspired by
 [cucmber_watir](cucumber_watir).
 
 Setting Up Aloe Webdriver
-=========================
+-------------------------
 
 In your ``terrain.py`` file, add an include statement to register the
 additional step definitions provided by Aloe Webdriver:
@@ -29,7 +29,7 @@ def setup_browser():
 ```
 
 Usage
-=====
+-----
 
 Aloe features are written in the standard Gherkin language, for example:
 
@@ -47,7 +47,7 @@ Scenario: Filling out the signup form
 ```
 
 Included Matchers
-=================
+-----------------
 
 The following Aloe steps are included in this package and can be used with
 Given/When/Then/And as desired.
