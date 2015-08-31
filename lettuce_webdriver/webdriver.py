@@ -1,4 +1,4 @@
-"""Webdriver support for lettuce"""
+"""Webdriver support for Aloe"""
 
 from __future__ import unicode_literals
 from __future__ import print_function

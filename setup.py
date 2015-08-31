@@ -5,13 +5,12 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.rst')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+README = open(os.path.join(here, 'README.md')).read()
 
 setup(name='lettuce_webdriver',
       version=__version__,
       description='Selenium webdriver extension for lettuce',
-      long_description=README + '\n\n' +  CHANGES,
+      long_description=README,
       classifiers=[
         "Intended Audience :: Developers",
         "Programming Language :: Python",
