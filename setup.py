@@ -15,8 +15,18 @@ if __name__ == '__main__':
             name='aloe_webdriver',
             version=__version__,
             description='Selenium webdriver extension for Aloe',
-            author="Alexey Kotlyarov, Nick Pilon, Ben Bangert",
-            author_email="a@koterpillar.com, npilon@gmail.com, ben@groovie.org",
+            author=", ".join((
+                'Alexey Kotlyarov',
+                'Danielle Madeley',
+                'Nick Pilon',
+                'Ben Bangert',
+            )),
+            author_email=', '.join((
+                'a@koterpillar.com',
+                'danielle@madeley.id.au',
+                'npilon@gmail.com,',
+                'ben@groovie.org',
+            )),
             url="https://github.com/koterpillar/aloe_webdriver/",
             long_description=readme.read(),
             classifiers=[

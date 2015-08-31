@@ -1,37 +1,32 @@
-import os
-import unittest
+"""Test CSS selector steps."""
 
-from aloe import world
-from aloe.testing import FeatureTest, in_directory
+from aloe.testing import FeatureTest
 
-from aloe_webdriver.tests import html_pages
-
-PAGES = {}
-for filename in os.listdir(html_pages):
-    name = filename.split('.html')[0]
-    PAGES[name] = 'file://%s' % os.path.join(html_pages, filename)
+from aloe_webdriver.tests.base import feature, PAGES
 
 
-FEATURES = [
-    """
-    Feature: Wait and match CSS
-        Scenario: Everything fires up
-            When I go to "%(page)s"
-            Then There should be an element matching $("textarea[name='bio']") within 1 second
-    """ % {'page': PAGES['basic_page']},
+class TestCSS(FeatureTest):
+    """Test CSS steps."""
 
-    """
-    Feature: CSS-based formstuff
-        Scenario: Everything fires up
-            When I go to "%(page)s"
-            Then I fill in $("input[name='user']") with "A test string"
-            And I check $("input[value='Bike']")
-    """ % {'page': PAGES['basic_page']},
-]
+    @feature()
+    def test_css_match(self):
+        """
+Feature: Wait and match CSS
+    Scenario: Everything fires up
+        When I go to "{page}"
+        Then There should be an element matching $("textarea[name='bio']") within 1 second
+        """  # noqa
 
-@in_directory('tests')
-class TestUtil(FeatureTest):
-    def test_features(self):
-        for feature_string in FEATURES:
-            result = self.run_feature_string(feature_string)
-            self.assertTrue(result.success)
+        return dict(page=PAGES['basic_page'])
+
+    @feature()
+    def test_forms(self):
+        """
+Feature: CSS-based formstuff
+    Scenario: Everything fires up
+        When I go to "{page}"
+        Then I fill in $("input[name='user']") with "A test string"
+        And I check $("input[value='Bike']")
+        """
+
+        return dict(page=PAGES['basic_page'])

@@ -20,12 +20,17 @@ import aloe_webdriver.webdriver
 And a step to create the desired Selenium browser:
 
 ```python
+from contextlib import contextmanager
 from aloe import before, world
 from selenium import webdriver
 
-@before.all
-def setup_browser():
+@around.all
+@contextmanager
+def with_browser():
     world.browser = webdriver.Firefox()
+    yield
+    world.browser.quit()
+    delattr(world, 'browser')
 ```
 
 Usage

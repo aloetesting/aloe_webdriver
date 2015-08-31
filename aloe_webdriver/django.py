@@ -3,9 +3,9 @@ Django-specific extensions
 """
 
 try:
-    from urllib.parse import urljoin
+    from urllib.parse import urljoin  # pylint:disable=no-name-in-module
 except ImportError:
-    from urlparse import urljoin
+    from urlparse import urljoin  # pylint:disable=import-error
 
 from aloe import step
 

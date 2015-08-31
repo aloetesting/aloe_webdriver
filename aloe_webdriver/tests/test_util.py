@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
+"""Test step functions directly."""
 
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-import os
 import unittest
 
 from selenium import webdriver
 
 from aloe import world
-from aloe_webdriver.tests import html_pages
+from aloe_webdriver.tests.base import PAGES
+
+# pylint:disable=missing-docstring
 
 
 class TestUtil(unittest.TestCase):
     def setUp(self):
-        file_path = 'file://%s' % os.path.join(html_pages, 'basic_page.html')
         world.browser = webdriver.Firefox()
-        world.browser.get(file_path)
+        world.browser.get(PAGES['basic_page'])
 
     def tearDown(self):
         world.browser.quit()
@@ -72,5 +73,7 @@ class TestUtil(unittest.TestCase):
             counter[0] += 1
             return counter[0] > i
 
+        # pylint:disable=unexpected-keyword-arg
+        # wait_for decorator parses the argument
         assert not lazy_function(10, timeout=1)
         assert lazy_function(5, timeout=1)
