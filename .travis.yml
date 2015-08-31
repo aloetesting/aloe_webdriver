@@ -15,6 +15,7 @@ install:
 # command to run tests
 script:
     - pep8 .
+    - pylint aloe_webdriver setup.py
     - nosetests
     - ./tools/check_installs
 

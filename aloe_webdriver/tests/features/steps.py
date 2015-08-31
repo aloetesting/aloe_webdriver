@@ -26,6 +26,7 @@ reload(aloe_webdriver.css_selector_steps)
 @around.all
 @contextmanager
 def with_browser():
+    """Start a browser for the tests."""
     world.browser = webdriver.Firefox()
     world.browser.get('')
     yield
@@ -35,4 +36,5 @@ def with_browser():
 
 @before.each_feature
 def reset_page(feature):
+    """Reset the browser before each feature."""
     world.browser.get('')
