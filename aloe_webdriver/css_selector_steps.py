@@ -3,7 +3,7 @@ from time import sleep
 from aloe import step
 from aloe import world
 
-from lettuce_webdriver.util import (
+from aloe_webdriver.util import (
     wait_for,
 )
 

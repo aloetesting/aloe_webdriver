@@ -5,7 +5,7 @@ from functools import wraps
 from aloe import world
 from aloe.testing import FeatureTest, in_directory
 
-from lettuce_webdriver.tests import html_pages
+from aloe_webdriver.tests import html_pages
 
 PAGES = {}
 for filename in os.listdir(html_pages):

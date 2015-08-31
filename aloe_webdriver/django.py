@@ -10,7 +10,7 @@ except ImportError:
 from aloe import step
 
 # make sure the steps are loaded
-import lettuce_webdriver.webdriver  # pylint:disable=unused-import
+import aloe_webdriver.webdriver  # pylint:disable=unused-import
 
 
 @step(r'I visit site page "([^"]*)"')

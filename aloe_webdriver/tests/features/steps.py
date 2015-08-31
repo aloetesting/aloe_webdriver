@@ -14,13 +14,13 @@ from selenium import webdriver
 
 from aloe import around, before, world
 
-import lettuce_webdriver.webdriver
-import lettuce_webdriver.css_selector_steps
+import aloe_webdriver.webdriver
+import aloe_webdriver.css_selector_steps
 
 # This module is reloaded during testing in order to re-register the steps and
 # callbacks. Make sure the modules where the steps are defined are, too.
-reload(lettuce_webdriver.webdriver)
-reload(lettuce_webdriver.css_selector_steps)
+reload(aloe_webdriver.webdriver)
+reload(aloe_webdriver.css_selector_steps)
 
 
 @around.all
