@@ -9,7 +9,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(name='aloe_webdriver',
       version=__version__,
-      description='Selenium webdriver extension for lettuce',
+      description='Selenium webdriver extension for Aloe',
       long_description=README,
       classifiers=[
         "Intended Audience :: Developers",
@@ -17,7 +17,6 @@ setup(name='aloe_webdriver',
         "Topic :: Internet :: WWW/HTTP",
         'Topic :: Software Development :: Testing',
         ],
-      keywords='web lettuce bdd',
       author="Nick Pilon, Ben Bangert",
       author_email="npilon@gmail.com, ben@groovie.org",
       url="https://github.com/bbangert/aloe_webdriver/",

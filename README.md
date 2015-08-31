@@ -49,8 +49,8 @@ Scenario: Filling out the signup form
 Included Matchers
 =================
 
-The following lettuce step matchers are included in this package and can be
-used with Given/When/Then/And as desired.
+The following Aloe steps are included in this package and can be used with
+Given/When/Then/And as desired.
 
 ### URLs
 
