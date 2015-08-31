@@ -10,6 +10,7 @@ from aloe import (
 import os.path
 import json
 
+
 def set_save_directory(base, source):
     """Sets the root save directory for saving screenshots.
 

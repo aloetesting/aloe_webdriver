@@ -18,7 +18,7 @@ FEATURES = [
         Scenario: Everything fires up
             When I go to "%(page)s"
             Then There should be an element matching $("textarea[name='bio']") within 1 second
-    """ % {'page': PAGES['basic_page']},
+    """ % {'page': PAGES['basic_page']},  # noqa
 
     """
     Feature: CSS-based formstuff
@@ -28,6 +28,7 @@ FEATURES = [
             And I check $("input[value='Bike']")
     """ % {'page': PAGES['basic_page']},
 ]
+
 
 @in_directory('tests')
 class TestUtil(FeatureTest):

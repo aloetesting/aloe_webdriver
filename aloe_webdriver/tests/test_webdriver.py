@@ -85,7 +85,7 @@ Feature: I should see a link containing
         When I go to "{page}"
         Then The browser's URL should contain "file://"
         And I should see a link that contains the text "Goo" and the url "http://google.com/"
-        """
+        """   # noqa
 
         return dict(page=PAGES['basic_page'])
 

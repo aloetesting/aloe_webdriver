@@ -97,8 +97,8 @@ def should_see_link(step, link_url):
 @step('I should see a link to "(.*?)" with the url "(.*?)"$')
 def should_see_link_text(step, link_text, link_url):
     assert_true(world.browser.find_element_by_xpath(str(
-                    '//a[@href="%s"][./text()="%s"]' %
-                    (link_url, link_text))))
+        '//a[@href="%s"][./text()="%s"]' %
+        (link_url, link_text))))
 
 
 @step('I should see a link that contains the text "(.*?)" '
