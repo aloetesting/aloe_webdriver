@@ -1,32 +1,34 @@
-__version__ = '0.3.5'
+"""
+Setup script.
+"""
 
-import os
+__version__ = '0.3.5'
 
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.rst')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+if __name__ == '__main__':
+    with \
+            open('requirements.txt') as requirements, \
+            open('test_requirements.txt') as test_requirements, \
+            open('README.md') as readme:
+        setup(
+            name='aloe_webdriver',
+            version=__version__,
+            description='Selenium webdriver extension for Aloe',
+            author="Alexey Kotlyarov, Nick Pilon, Ben Bangert",
+            author_email="a@koterpillar.com, npilon@gmail.com, ben@groovie.org",
+            url="https://github.com/koterpillar/aloe_webdriver/",
+            long_description=readme.read(),
+            classifiers=[
+                'License :: OSI Approved :: ' +
+                'GNU General Public License v3 or later (GPLv3+)',
+            ],
 
-setup(name='lettuce_webdriver',
-      version=__version__,
-      description='Selenium webdriver extension for lettuce',
-      long_description=README + '\n\n' +  CHANGES,
-      classifiers=[
-        "Intended Audience :: Developers",
-        "Programming Language :: Python",
-        "Topic :: Internet :: WWW/HTTP",
-        'Topic :: Software Development :: Testing',
-        ],
-      keywords='web lettuce bdd',
-      author="Nick Pilon, Ben Bangert",
-      author_email="npilon@gmail.com, ben@groovie.org",
-      url="https://github.com/bbangert/lettuce_webdriver/",
-      license="MIT",
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False,
-      tests_require = ['aloe', 'nose', 'selenium'],
-      install_requires = ['aloe', 'nose', 'selenium'],
-      test_suite="lettuce_webdriver",
-      )
+            packages=find_packages(),
+            include_package_data=True,
+
+            install_requires=requirements.readlines(),
+
+            test_suite='aloe_webdriver',
+            tests_require=test_requirements.readlines(),
+        )

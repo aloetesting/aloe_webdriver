@@ -1,4 +1,4 @@
-"""Webdriver support for lettuce"""
+"""Webdriver support for Aloe"""
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -10,7 +10,7 @@ from builtins import str
 
 from aloe import step, world
 
-from lettuce_webdriver.util import (
+from aloe_webdriver.util import (
     find_any_field,
     find_button,
     find_field,
@@ -38,7 +38,7 @@ from selenium.common.exceptions import (
 
 # pylint:disable=missing-docstring,redefined-outer-name
 
-from lettuce_webdriver.css_selector_steps import *
+from aloe_webdriver.css_selector_steps import *
 
 
 def contains_content(browser, content):
