@@ -14,7 +14,7 @@ from time import time, sleep
 try:
     reduce
 except NameError:
-    from functools import reduce
+    from functools import reduce  # pylint:disable=redefined-builtin
 
 from selenium.common.exceptions import NoSuchElementException
 

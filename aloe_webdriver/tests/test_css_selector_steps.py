@@ -15,7 +15,7 @@ Feature: Wait and match CSS
     Scenario: Everything fires up
         When I go to "{page}"
         Then There should be an element matching $("textarea[name='bio']") within 1 second
-        """
+        """  # noqa
 
         return dict(page=PAGES['basic_page'])
 
