@@ -1,5 +1,7 @@
 """
-Django-specific extensions
+Django-specific extensions for use with aloe_django_.
+
+.. _aloe_django: https://github.com/koterpillar/aloe_django
 """
 
 try:
@@ -16,7 +18,11 @@ import aloe_webdriver.webdriver  # pylint:disable=unused-import
 @step(r'I visit site page "([^"]*)"')
 def visit_page(self, page):
     """
-    Visit the specific page of the site.
+    Visit the specific page of the site, e.g.
+
+    .. code-block:: gherkin
+
+        When I visit site page "/users"
     """
 
     testclass = self.testclass

@@ -10,7 +10,7 @@ if __name__ == '__main__':
     with \
             open('requirements.txt') as requirements, \
             open('test_requirements.txt') as test_requirements, \
-            open('README.md') as readme:
+            open('README.rst') as readme:
         setup(
             name='aloe_webdriver',
             version=__version__,

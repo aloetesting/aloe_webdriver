@@ -19,3 +19,4 @@ jyenv/
 pypyenv/
 build/
 dist/
+/docs/_build
