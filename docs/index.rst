@@ -8,7 +8,9 @@ that run in the browser using Selenium_ webdriver.
 .. toctree::
     :maxdepth: 2
 
-    steps
+    basic
+    forms
+    other
 
 Installing
 ==========
