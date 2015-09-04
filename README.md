@@ -14,7 +14,7 @@ In your ``terrain.py`` file, add an include statement to register the
 additional step definitions provided by Aloe Webdriver:
 
 ```python
-import aloe_webdriver.webdriver
+import aloe_webdriver
 ```
 
 And a step to create the desired Selenium browser:
