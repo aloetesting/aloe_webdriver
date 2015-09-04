@@ -13,6 +13,7 @@ Navigation
 .. autofunction:: url_should_be
 .. autofunction:: url_should_contain
 .. autofunction:: url_should_not_contain
+.. autofunction:: page_title
 
 Text
 ----
@@ -80,6 +81,33 @@ Selects (Comboboxes)
 .. autofunction:: assert_multi_selected
 .. autofunction:: select_contains
 .. autofunction:: select_does_not_contain
+
+Alerts
+======
+
+Validate the behaviour of popup alerts.
+
+.. autofunction:: check_alert
+.. autofunction:: check_no_alert
+.. autofunction:: accept_alert
+.. autofunction:: dismiss_alert
+
+Frames
+======
+
+Use these steps to switch frames if you need to work in a different frame or
+iframe. It is recommended you wrap these steps up in a more behavioural
+description.
+
+.. autofunction:: switch_to_frame
+.. autofunction:: switch_to_main
+
+Tooltips
+========
+
+.. autofunction:: see_tooltip
+.. autofunction:: no_see_tooltip
+.. autofunction:: press_by_tooltip
 
 Checks based on HTML ``id``
 ===========================

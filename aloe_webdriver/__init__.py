@@ -101,6 +101,14 @@ def url_should_not_contain(self, url):
     assert_not_in(url, world.browser.current_url)
 
 
+@step(r'The page title should be "([^"]*)"')
+@step(r"The page title should be '([^']*)'")
+def page_title(self, title):
+    """
+    Assert the page title matches the given text.
+    """
+    assert_equal(world.browser.title, title)
+
 # Links #####################################################################
 
 
@@ -578,11 +586,13 @@ def assert_radio_not_selected(self, value):
     assert_false(box.is_selected())
 
 
-# Alerts
+# Alerts ####################################################################
+
+
 @step('I accept the alert')
 def accept_alert(self):
     """
-    Accept the alert
+    Accept the alert.
     """
 
     try:
@@ -596,7 +606,7 @@ def accept_alert(self):
 @step('I dismiss the alert')
 def dismiss_alert(self):
     """
-    Dismiss the alert
+    Dismiss the alert.
     """
 
     try:
@@ -611,7 +621,7 @@ def dismiss_alert(self):
 @step(r"I should see an alert with text '([^']*)'")
 def check_alert(self, text):
     """
-    Check the alert text
+    Assert an alert is showing with the given text.
     """
 
     try:
@@ -625,7 +635,7 @@ def check_alert(self, text):
 @step('I should not see an alert')
 def check_no_alert(self):
     """
-    Check there is no alert
+    Assert there is no alert.
     """
 
     try:
@@ -635,12 +645,16 @@ def check_no_alert(self):
     except NoAlertPresentException:
         pass
 
+# Tooltips ##################################################################
+
 
 @step(r'I should see an element with tooltip "([^"]*)"')
 @step(r"I should see an element with tooltip '([^']*)'")
 def see_tooltip(self, tooltip):
     """
-    Press a button having a given tooltip.
+    Assert an element with the given tooltip (title) is visible.
+
+    N.B. tooltip may not be visible.
     """
     elem = world.browser.find_elements_by_xpath(str(
         '//*[@title=%(tooltip)s or @data-original-title=%(tooltip)s]' %
@@ -653,7 +667,7 @@ def see_tooltip(self, tooltip):
 @step(r"I should not see an element with tooltip '([^']*)'")
 def no_see_tooltip(self, tooltip):
     """
-    Press a button having a given tooltip.
+    Assert an element with the given tooltip (title) is not visible.
     """
     elem = world.browser.find_elements_by_xpath(str(
         '//*[@title=%(tooltip)s or @data-original-title=%(tooltip)s]' %
@@ -666,7 +680,9 @@ def no_see_tooltip(self, tooltip):
 @step(r"I (?:click|press) the element with tooltip '([^']*)'")
 def press_by_tooltip(self, tooltip):
     """
-    Press a button having a given tooltip.
+    Click on a HTML with a given tooltip.
+
+    This is very useful if you're clicking on icon buttons, etc.
     """
     for button in world.browser.find_elements_by_xpath(str(
             '//*[@title="%(tooltip)s" or @data-original-title="%(tooltip)s"]'
@@ -681,22 +697,17 @@ def press_by_tooltip(self, tooltip):
         raise AssertionError("No button with tooltip '{0}' found"
                              .format(tooltip))
 
-
-@step(r'The page title should be "([^"]*)"')
-@step(r"The page title should be '([^']*)'")
-def page_title(self, title):
-    """
-    Check that the page title matches the given one.
-    """
-    assert_equal(world.browser.title, title)
+# Frames ####################################################################
 
 
 @step(r'I switch to the frame with id "([^"]*)"')
 def switch_to_frame(self, frame):
+    """Swap Selenium's context to the given frame or iframe."""
     elem = world.browser.find_element_by_id(frame)
     world.browser.switch_to_frame(elem)
 
 
 @step(r'I switch back to the main view')
 def switch_to_main(self):
+    """Swap Selenium's context back to the main window."""
     world.browser.switch_to_default_content()
