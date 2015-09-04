@@ -219,12 +219,13 @@ def find_any_field(browser, field_types, field_name):
 
 
 def find_field_by_id(browser, field, id):
-    return XPathSelector(browser, field_xpath(field, 'id') % string_literal(id))
+    return XPathSelector(browser,
+                         field_xpath(field, 'id') % string_literal(id))
 
 
 def find_field_by_name(browser, field, name):
-    return XPathSelector(browser, field_xpath(field, 'name') % \
-                         string_literal(name))
+    return XPathSelector(browser,
+                         field_xpath(field, 'name') % string_literal(name))
 
 
 def find_field_by_value(browser, field, name):
