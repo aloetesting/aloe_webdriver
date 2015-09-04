@@ -331,7 +331,7 @@ def fill_in_textfield(self, field_name, value):
     Fill in the HTML input with given label (recommended), name or id with
     the given text.
 
-    Support input types are text, textarea, password, month, time, week,
+    Supported input types are text, textarea, password, month, time, week,
     number, range, email, url, tel and color.
     """
     date_field = find_any_field(world.browser,
@@ -680,7 +680,7 @@ def no_see_tooltip(self, tooltip):
 @step(r"I (?:click|press) the element with tooltip '([^']*)'")
 def press_by_tooltip(self, tooltip):
     """
-    Click on a HTML with a given tooltip.
+    Click on a HTML element with a given tooltip.
 
     This is very useful if you're clicking on icon buttons, etc.
     """

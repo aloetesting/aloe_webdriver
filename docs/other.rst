@@ -28,7 +28,7 @@ Checks based on HTML ``id``
 
 Using the HTML ``id`` is generally considered bad BDD, but sometimes it is
 the only way to unambiguously refer to an element. It is strongly recommended
-to find a more behaviour mechanism to describe your test.
+to find a more behavioral mechanism to describe your test.
 
 Use :meth:`step.behave_as` to call these steps from ones of your own step to
 abstract the mechanics of your website into something more descriptive. This
