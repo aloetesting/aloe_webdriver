@@ -6,7 +6,7 @@
 that run in the browser using Selenium_ webdriver.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     basic
     forms
