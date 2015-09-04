@@ -1,16 +1,32 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
+    - "2.7"
+    - "3.4"
 
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
 
 # commands to install dependencies
 install:
-  - pip install -r requirements.txt
+    - pip install -r requirements.txt
+    - pip install -r test_requirements.txt
 
 # command to run tests
 script:
-  - nosetests
+    - pep8 .
+    - pylint aloe_webdriver setup.py
+    - nosetests
+    - ./tools/check_installs
+
+deploy:
+    provider: pypi
+    user: koterpillar
+    password:
+        secure: "D3LEdBgUmVXnd6AmZT7bCFVbH6dJwUxQgdaZLiOm0LMmLRmTf/3lWH/3ZWTKDSd+O7O71EFrwTVZLVhb7lA4oF2HR6IRKPRQt+MYe+PW9H8Nf8dVwAA2nuUSF8HK4dZYF/fRY8TjkyaURHclHFN3DZnPxzAZ3mwxKrPKhdBoDT+oEMed03VzZK8c8FnIJmgmgyfHi6A+DNTa7iDEPu43KIpBb+Sq3abIWelwtKgBCCUM8LUUoQbjYISiFXV2P71SqVv9LWRm3xpg5qVdZedHTr14wNl8tIQ3EkXh4KBlPwjsYErD+EDoE5Z1TdL2rkrRsh4Dqtl/Fklnypc7T8GQAZiuVNvS0QQhSOLqjnFhx+pYBH6y4/3vtSntb/jRKVQJXtqGzUjN5iCsuzLNTrQ+iU1fA6hJdfGtl2zX+smKp5Bd3dL9itGgoEg5mi2V3UxM190fdVCQlnGHtBEk894wp5YPQZCBsJR/WQd0uXSsVwpGOFB1icj1FbtdeuwMcBrwzTdQkq6SoXKd56FLk5s8fg4fiosFd6fmDTDWKNGnZqzvlBsVOl23QKYNDGpHsf6+WSODdp2G7NRVBf5Iq6Bp4b0IPbpnR9WATe6xPkZpAR4efH/exMrxm6c3lRgCFGV/tsWMBxxtjvuSkFsKyXilp9BwPWzs3PUbfluGvTvMLuk="
+    server: https://pypi.python.org/pypi
+    on:
+        tags: true
+        all_branches: true
+        python: 3.4
+        condition: "\"$TRAVIS_TAG\" = \"v$(python setup.py --version)\""

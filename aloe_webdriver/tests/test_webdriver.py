@@ -1,56 +1,15 @@
-import os
-import unittest
-from functools import wraps
+"""
+Test Webdriver steps.
+"""
 
-from aloe import world
-from aloe.testing import FeatureTest, in_directory
+from aloe.testing import FeatureTest
 
-from lettuce_webdriver.tests import html_pages
-
-PAGES = {}
-for filename in os.listdir(html_pages):
-    name = filename.split('.html')[0]
-    PAGES[name] = 'file://%s' % os.path.join(html_pages, filename)
-
-
-def feature(fails=False):
-    """
-    Decorate a test method to test the feature contained in its docstring.
-
-    Apply the context returned by the method to the feature.
-
-    For example:
-        @feature(failed=False)
-        def test_some_feature(self):
-            '''
-            Feature: This name is returned
-                Scenario: ...
-                    When I {variable}
-            '''
-
-            return dict(variable=something)
-    """
-
-    def outer(func):
-        @wraps(func)
-        @in_directory('tests')
-        def inner(self):
-            v = func(self)
-            feature_string = func.__doc__.format(**v)
-
-            result = self.run_feature_string(feature_string)
-
-            if fails:
-                self.assertFalse(result.success)
-            else:
-                self.assertTrue(result.success)
-
-        return inner
-
-    return outer
+from aloe_webdriver.tests.base import feature, PAGES
 
 
 class TestUtil(FeatureTest):
+    """Test steps."""
+
     @feature()
     def test_I_should_see(self):
         """
@@ -86,7 +45,7 @@ Feature: I should see a link containing
         When I go to "{page}"
         Then The browser's URL should contain "file://"
         And I should see a link that contains the text "Goo" and the url "http://google.com/"
-        """
+        """   # noqa
 
         return dict(page=PAGES['basic_page'])
 
