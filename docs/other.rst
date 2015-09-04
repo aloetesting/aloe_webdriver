@@ -67,3 +67,12 @@ description.
 .. autofunction:: switch_to_frame
 .. autofunction:: switch_to_main
 
+CSS Selectors
+=============
+
+.. automodule:: aloe_webdriver.css
+
+Screenshots
+===========
+
+.. automodule:: aloe_webdriver.screenshot

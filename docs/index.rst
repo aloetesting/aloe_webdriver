@@ -11,6 +11,7 @@ that run in the browser using Selenium_ webdriver.
     basic
     forms
     other
+    django
 
 Installing
 ==========
@@ -36,6 +37,7 @@ Indices and tables
 * :ref:`search`
 
 .. _aloe: https://github.com/koterpillar/aloe
+.. _aloe_django: https://github.com/koterpillar/aloe_django
 .. _lettuce_webdriver: https://github.com/bbangert/lettuce_webdriver
 .. _lettuce: http://lettuce.it/
 .. _selenium: http://selenium-python.readthedocs.org/
