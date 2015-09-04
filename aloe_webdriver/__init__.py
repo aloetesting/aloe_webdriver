@@ -38,10 +38,6 @@ from selenium.common.exceptions import (
 
 # pylint:disable=missing-docstring
 
-# pylint:disable=wildcard-import,unused-wildcard-import
-from aloe_webdriver.css_selector_steps import *
-# pylint:enable=wildcard-import,unused-wildcard-import
-
 
 def contains_content(browser, content):
     # Search for an element that contains the whole of the text we're looking
