@@ -30,8 +30,7 @@ if __name__ == '__main__':
             url="https://github.com/koterpillar/aloe_webdriver/",
             long_description=readme.read(),
             classifiers=[
-                'License :: OSI Approved :: ' +
-                'GNU General Public License v3 or later (GPLv3+)',
+                'License :: OSI Approved :: MIT License',
             ],
 
             packages=find_packages(),
