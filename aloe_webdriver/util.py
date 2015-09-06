@@ -162,7 +162,7 @@ def element_id_by_label(browser, label):
     :param browser: ``world.browser``
     :param label: label text to return the referenced element for.
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     label = XPathSelector(browser,
                           str('//label[contains(., %s)]' %
@@ -201,7 +201,7 @@ def find_button(browser, value):
 
     Searches for `submit`, `reset`, `button` and `image` buttons.
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     field_types = (
         'submit',
@@ -248,7 +248,7 @@ def find_field(browser, field_type, value):
     This first looks for `value` as the id of the element, else
     the name of the element, else as a label for the element.
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     return find_field_by_id(browser, field_type, value) + \
         find_field_by_name(browser, field_type, value) + \
@@ -263,7 +263,7 @@ def find_any_field(browser, field_types, field_name):
     :param list field_types: a list of field type (i.e. `button`)
     :param string value: an id, name or label
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
 
     See also: :func:`find_field`.
     """
@@ -283,7 +283,7 @@ def find_field_by_id(browser, field_type, id):
     :param string field_type: a field type (i.e. `button`)
     :param string id: ``id`` attribute
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     return XPathSelector(browser,
                          field_xpath(field_type, 'id') % string_literal(id))
@@ -297,7 +297,7 @@ def find_field_by_name(browser, field_type, name):
     :param string field_type: a field type (i.e. `button`)
     :param string name: ``name`` attribute
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     return XPathSelector(browser,
                          field_xpath(field_type, 'name') %
@@ -312,7 +312,7 @@ def find_field_by_value(browser, field_type, name):
     :param string field_type: a field type (i.e. `button`)
     :param string name: ``value`` attribute
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
     xpath = field_xpath(field_type, 'value') % string_literal(name)
     elems = [elem for elem in XPathSelector(browser, str(xpath))
@@ -343,7 +343,7 @@ def find_field_by_label(browser, field_type, label):
     name. It then pulls the id out of the 'for' attribute, and uses it to
     locate the element by its id.
 
-    Returns: a :class:`XPathSelector`
+    Returns: an :class:`XPathSelector`
     """
 
     return XPathSelector(browser,
