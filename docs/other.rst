@@ -9,6 +9,10 @@ Other Steps
 Alerts
 ======
 
+.. code-block:: python
+
+    import aloe_webdriver
+
 Validate the behaviour of popup alerts.
 
 .. autofunction:: check_alert
@@ -18,6 +22,10 @@ Validate the behaviour of popup alerts.
 
 Tooltips
 ========
+
+.. code-block:: python
+
+    import aloe_webdriver
 
 .. autofunction:: see_tooltip
 .. autofunction:: no_see_tooltip
@@ -70,9 +78,17 @@ description.
 CSS Selectors
 =============
 
+.. code-block:: python
+
+    import aloe_webdriver.css
+
 .. automodule:: aloe_webdriver.css
 
 Screenshots
 ===========
+
+.. code-block:: python
+
+    import aloe_webdriver.screenshot
 
 .. automodule:: aloe_webdriver.screenshot

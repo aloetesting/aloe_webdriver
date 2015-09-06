@@ -6,6 +6,10 @@ Basic Steps
 
 .. currentmodule:: aloe_webdriver
 
+.. code-block:: python
+
+    import aloe_webdriver
+
 Navigation
 ----------
 
