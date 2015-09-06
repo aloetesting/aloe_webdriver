@@ -312,7 +312,7 @@ def find_field_by_value(browser, field_type, name):
     :param string field_type: a field type (i.e. `button`)
     :param string name: ``value`` attribute
 
-    Returns: a list of 1 element
+    Returns: a :class:`XPathSelector`
     """
     xpath = field_xpath(field_type, 'value') % string_literal(name)
     elems = [elem for elem in XPathSelector(browser, str(xpath))
@@ -327,7 +327,8 @@ def find_field_by_value(browser, field_type, name):
 
     if elems:
         elems = [elems[0]]
-    return elems
+
+    return XPathSelector(browser, elements=elems)
 
 
 def find_field_by_label(browser, field_type, label):
