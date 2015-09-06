@@ -28,7 +28,7 @@ Instead a better, declarative example would be:
 .. code-block:: gherkin
 
     Given I have logged into the system
-    And I should see "Welcome"
+    Then I should see "Welcome"
 
 Use :meth:`step.behave_as` to call the imperative steps from your own step
 abstracts the mechanics of your website into something more descriptive. This
