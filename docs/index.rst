@@ -12,6 +12,7 @@ that run in the browser using Selenium_ webdriver.
     forms
     other
     django
+    writing-steps
 
 Installing
 ==========

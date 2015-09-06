@@ -1,4 +1,6 @@
-"""Utility functions that combine steps to locate elements"""
+"""
+`Aloe-Webdriver` includes several utilities for writing Selenium_ tests.
+"""
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -23,7 +25,14 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 def string_literal(content):
-    """Choose a string literal that can wrap our string"""
+    """
+    Choose a string literal that can wrap our string.
+
+    If your string contains a ``\'`` the result will be wrapped in ``\"``.
+    If your string contains a ``\"`` the result will be wrapped in ``\'``.
+
+    Cannot currently handle strings which contain both ``\"`` and ``\'``.
+    """
 
     if '"' in content and "'" in content:
         # there is no way to escape string literal characters in XPath
@@ -40,20 +49,31 @@ class XPathSelector(object):
     """
     A set of elements on a page matching an XPath query.
 
+    :param browser: ``world.browser``
+    :param str xpath: XPath query
+    :param list elements: list of :class:`selenium.WebElement` objects
+
     Delays evaluation to batch the queries together, allowing operations on
     selectors (e.g. union) to be performed first, and then issuing as few
     requests to the browser as possible.
 
-    Also behaves as a single element by proxying all method calls, asserting
-    that there is only one element selected.
+    One of `xpath` or `elements` must be passed. Passing `xpath` creates a
+    selector delaying evaluation until it's needed, passing `elements`
+    stores the elements immediately.
+
+    Can behave as an iterable of elements or a single element by proxying all
+    method calls, asserting that there is only one element selected.
+
+    Can be combined using the addition operator (``+``) to `OR` XPath queries
+    together.
     """
 
     def __init__(self, browser, xpath=None, elements=None):
         """
         Initialise the selector.
 
-        One of 'xpath' and 'elements' must be passed. Passing 'xpath' creates a
-        selector delaying evaluation until it's needed, passing 'elements'
+        One of `xpath` or `elements` must be passed. Passing `xpath` creates a
+        selector delaying evaluation until it's needed, passing `elements`
         stores the elements immediately.
         """
         self.browser = browser
@@ -135,7 +155,15 @@ class XPathSelector(object):
 
 
 def element_id_by_label(browser, label):
-    """Return the id of a label's for attribute"""
+    """
+    Return an :class:`XPathSelector` for the element referenced by a `label`s
+    ``for`` attribute.
+
+    :param browser: ``world.browser``
+    :param label: label text to return the referenced element for.
+
+    Returns: an :class:`XPathSelector`
+    """
     label = XPathSelector(browser,
                           str('//label[contains(., %s)]' %
                               string_literal(label)))
@@ -168,10 +196,25 @@ def field_xpath(field, attribute):
 
 
 def find_button(browser, value):
-    return find_field_with_value(browser, 'submit', value) + \
-        find_field_with_value(browser, 'reset', value) + \
-        find_field_with_value(browser, 'button', value) + \
-        find_field_with_value(browser, 'image', value)
+    """
+    Find a button with the given value.
+
+    Searches for `submit`, `reset`, `button` and `image` buttons.
+
+    Returns: an :class:`XPathSelector`
+    """
+    field_types = (
+        'submit',
+        'reset',
+        'button',
+        'image',
+    )
+
+    return reduce(
+        operator.add,
+        (find_field_with_value(browser, field_type, value)
+         for field_type in field_types)
+    )
 
 
 def find_field_with_value(browser, field, value):
@@ -194,21 +237,35 @@ def find_option(browser, select_name, option_name):
     return option_box
 
 
-def find_field(browser, field, value):
-    """Locate an input field of a given value
-
-    This first looks for the value as the id of the element, then
-    the name of the element, then a label for the element.
-
+def find_field(browser, field_type, value):
     """
-    return find_field_by_id(browser, field, value) + \
-        find_field_by_name(browser, field, value) + \
-        find_field_by_label(browser, field, value)
+    Locate an input field.
+
+    :param browser: ``world.browser``
+    :param string field_type: a field type (i.e. `button`)
+    :param string value: an id, name or label
+
+    This first looks for `value` as the id of the element, else
+    the name of the element, else as a label for the element.
+
+    Returns: an :class:`XPathSelector`
+    """
+    return find_field_by_id(browser, field_type, value) + \
+        find_field_by_name(browser, field_type, value) + \
+        find_field_by_label(browser, field_type, value)
 
 
 def find_any_field(browser, field_types, field_name):
     """
     Find a field of any of the specified types.
+
+    :param browser: ``world.browser``
+    :param list field_types: a list of field type (i.e. `button`)
+    :param string value: an id, name or label
+
+    Returns: an :class:`XPathSelector`
+
+    See also: :func:`find_field`.
     """
 
     return reduce(
@@ -218,23 +275,51 @@ def find_any_field(browser, field_types, field_name):
     )
 
 
-def find_field_by_id(browser, field, id):
+def find_field_by_id(browser, field_type, id):
+    """
+    Locate the control input with the given ``id``.
+
+    :param browser: ``world.browser``
+    :param string field_type: a field type (i.e. `button`)
+    :param string id: ``id`` attribute
+
+    Returns: an :class:`XPathSelector`
+    """
     return XPathSelector(browser,
-                         field_xpath(field, 'id') % string_literal(id))
+                         field_xpath(field_type, 'id') % string_literal(id))
 
 
-def find_field_by_name(browser, field, name):
+def find_field_by_name(browser, field_type, name):
+    """
+    Locate the control input with the given ``name``.
+
+    :param browser: ``world.browser``
+    :param string field_type: a field type (i.e. `button`)
+    :param string name: ``name`` attribute
+
+    Returns: an :class:`XPathSelector`
+    """
     return XPathSelector(browser,
-                         field_xpath(field, 'name') % string_literal(name))
+                         field_xpath(field_type, 'name') %
+                         string_literal(name))
 
 
-def find_field_by_value(browser, field, name):
-    xpath = field_xpath(field, 'value') % string_literal(name)
+def find_field_by_value(browser, field_type, name):
+    """
+    Locate the control input with the given ``value``. Useful for buttons.
+
+    :param browser: ``world.browser``
+    :param string field_type: a field type (i.e. `button`)
+    :param string name: ``value`` attribute
+
+    Returns: an :class:`XPathSelector`
+    """
+    xpath = field_xpath(field_type, 'value') % string_literal(name)
     elems = [elem for elem in XPathSelector(browser, str(xpath))
              if elem.is_displayed() and elem.is_enabled()]
 
     # sort by shortest first (most closely matching)
-    if field == 'button':
+    if field_type == 'button':
         elems = sorted(elems, key=lambda elem: len(elem.text))
     else:
         elems = sorted(elems,
@@ -242,20 +327,27 @@ def find_field_by_value(browser, field, name):
 
     if elems:
         elems = [elems[0]]
-    return elems
+
+    return XPathSelector(browser, elements=elems)
 
 
-def find_field_by_label(browser, field, label):
-    """Locate the control input that has a label pointing to it
+def find_field_by_label(browser, field_type, label):
+    """
+    Locate the control input that has a label pointing to it.
+
+    :param browser: ``world.browser``
+    :param string field_type: a field type (i.e. `button`)
+    :param string label: label text
 
     This will first locate the label element that has a label of the given
     name. It then pulls the id out of the 'for' attribute, and uses it to
     locate the element by its id.
 
+    Returns: an :class:`XPathSelector`
     """
 
     return XPathSelector(browser,
-                         field_xpath(field, 'id') %
+                         field_xpath(field_type, 'id') %
                          '//label[contains(., {0})]/@for'.format(
                              string_literal(label)))
 
@@ -282,6 +374,9 @@ def wait_for(func):
     """
     A decorator to invoke a function periodically until it returns a truthy
     value.
+
+    Adds a kwarg `timeout` to `func` which is a number of seconds to try
+    for (default 15).
     """
 
     def wrapped(*args, **kwargs):

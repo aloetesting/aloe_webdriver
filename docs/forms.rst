@@ -6,6 +6,10 @@ Forms
 
 .. currentmodule:: aloe_webdriver
 
+.. code-block:: python
+
+    import aloe_webdriver
+
 Steps for referring to form controls typically support three methods to
 identify the control:
 
