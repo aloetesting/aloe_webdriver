@@ -1,4 +1,6 @@
-"""Utility functions that combine steps to locate elements"""
+"""
+`Aloe-Webdriver` includes several utilities for writing Selenium_ tests.
+"""
 
 from __future__ import unicode_literals
 from __future__ import print_function

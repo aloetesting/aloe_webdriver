@@ -3,10 +3,12 @@ Steps for selecting elements using CSS selectors.
 
 Like with steps based on HTML id, these steps should be used cautiously to
 avoid creating tests that do not describe the behaviours of your application.
-Build your own steps that call these steps via :meth:`step.behave_as`.
+See :ref:`good-bdd`.
 
-Be aware these steps require jQuery_. If jQuery_ is not present it will be
-added (v1.10).
+.. note::
+
+    Be aware these steps require jQuery_. If jQuery_ is not present it will be
+    added (v1.10).
 
 .. _jQuery: https://jquery.com/
 """
