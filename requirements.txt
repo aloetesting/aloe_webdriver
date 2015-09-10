@@ -1,4 +1,4 @@
 aloe
-future
+future>=0.15
 nose
 selenium
