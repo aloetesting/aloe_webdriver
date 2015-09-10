@@ -1,3 +1,4 @@
+aloe_django
 pep8
 pylint
 pylint_mccabe
