@@ -10,9 +10,10 @@ except ImportError:
     from urlparse import urljoin  # pylint:disable=import-error
 
 from aloe import step
+from aloe_django import django_url
 
 # make sure the steps are loaded
-import aloe_webdriver.webdriver  # pylint:disable=unused-import
+import aloe_webdriver  # pylint:disable=unused-import
 
 
 @step(r'I visit site page "([^"]*)"')
@@ -25,7 +26,5 @@ def visit_page(self, page):
         When I visit site page "/users"
     """
 
-    testclass = self.testclass
-    base_url = testclass.live_server_url.__get__(testclass)
-    url = urljoin(base_url, page)
+    url = urljoin(django_url(self), page)
     self.given('I visit "%s"' % url)
