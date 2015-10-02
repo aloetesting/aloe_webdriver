@@ -33,6 +33,9 @@ from selenium.common.exceptions import WebDriverException
 
 # pylint:disable=missing-docstring
 
+# Pylint cannot infer the attributes on world
+# pylint:disable=no-member
+
 
 @wait_for
 def wait_for_elem_selector(browser, sel):

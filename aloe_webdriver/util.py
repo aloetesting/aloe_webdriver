@@ -23,6 +23,9 @@ from selenium.common.exceptions import NoSuchElementException
 # pylint:disable=missing-docstring,redefined-outer-name,redefined-builtin
 # pylint:disable=invalid-name
 
+# Pylint cannot infer the attributes on world
+# pylint:disable=no-member
+
 
 def string_literal(content):
     """

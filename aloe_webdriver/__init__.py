@@ -41,6 +41,9 @@ from selenium.common.exceptions import (
 
 # pylint:disable=missing-docstring
 
+# Pylint cannot infer the attributes on world
+# pylint:disable=no-member
+
 
 def contains_content(browser, content):
     """
