@@ -11,6 +11,9 @@ from aloe import (
 import os.path
 import json
 
+# Pylint cannot infer the attributes on world
+# pylint:disable=no-member
+
 
 def set_save_directory(base, source):
     """Sets the root save directory for saving screenshots.
