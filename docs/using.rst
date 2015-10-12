@@ -12,7 +12,7 @@ You are also responsible for building and maintaining the lifecycle of your
     from contextlib import contextmanager
 
     import aloe_webdriver
-    from aloe import before, world
+    from aloe import around, world
     from selenium import webdriver
 
     @around.all
