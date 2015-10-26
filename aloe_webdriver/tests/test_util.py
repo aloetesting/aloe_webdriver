@@ -27,14 +27,14 @@ from aloe_webdriver.util import (
 
 class TestUtil(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         world.browser = webdriver.Firefox()
 
     def setUp(self):
         world.browser.get(PAGES['basic_page'])
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
         world.browser.quit()
         delattr(world, 'browser')
 
@@ -47,7 +47,8 @@ class TestUtil(unittest.TestCase):
         assert find_field_by_name(world.browser, 'textarea', 'bio')
 
     def test_find_by_label(self):
-        assert find_field_by_label(world.browser, 'text', 'Username:')
+        field = find_field_by_label(world.browser, 'text', 'Username:')
+        self.assertEqual(field.get_attribute('id'), 'username')
 
     def test_no_label(self):
         assert not find_field_by_label(world.browser, 'text', 'NoSuchLabel')
