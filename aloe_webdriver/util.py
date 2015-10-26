@@ -186,7 +186,7 @@ class XPathSelector(object):
 def element_id_by_label(browser, label):
     """
     Return an :class:`XPathSelector` for the element referenced by a `label`s
-    ``for`` attribute.
+    ``for`` attribute. The label must be visible.
 
     :param browser: ``world.browser``
     :param label: label text to return the referenced element for.
