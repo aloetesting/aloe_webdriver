@@ -48,6 +48,32 @@ def string_literal(content):
     return content
 
 
+def filter_elements(elements, displayed=False, enabled=False):
+    """
+    Filter elements by visibility and enabled status.
+
+    :param elements: an :class:`XPathSelector` of elements to filter
+    :param displayed: whether to filter out invisible elements
+    :param enabled: whether to filter out disabled elements
+
+    Returns: an :class:`XPathSelector`
+    """
+
+    if displayed:
+        elements = XPathSelector(
+            elements.browser,
+            elements=[e for e in elements if e.is_displayed()]
+        )
+
+    if enabled:
+        elements = XPathSelector(
+            elements.browser,
+            elements=[e for e in elements if e.is_enabled()]
+        )
+
+    return elements
+
+
 class XPathSelector(object):
     """
     A set of elements on a page matching an XPath query.
@@ -160,7 +186,7 @@ class XPathSelector(object):
 def element_id_by_label(browser, label):
     """
     Return an :class:`XPathSelector` for the element referenced by a `label`s
-    ``for`` attribute.
+    ``for`` attribute. The label must be visible.
 
     :param browser: ``world.browser``
     :param label: label text to return the referenced element for.
@@ -318,8 +344,11 @@ def find_field_by_value(browser, field_type, name):
     Returns: an :class:`XPathSelector`
     """
     xpath = field_xpath(field_type, 'value') % string_literal(name)
-    elems = [elem for elem in XPathSelector(browser, str(xpath))
-             if elem.is_displayed() and elem.is_enabled()]
+    elems = filter_elements(
+        XPathSelector(browser, str(xpath)),
+        displayed=True,
+        enabled=True,
+    )
 
     # sort by shortest first (most closely matching)
     if field_type == 'button':
@@ -349,10 +378,13 @@ def find_field_by_label(browser, field_type, label):
     Returns: an :class:`XPathSelector`
     """
 
-    return XPathSelector(browser,
-                         field_xpath(field_type, 'id') %
-                         '//label[contains(., {0})]/@for'.format(
-                             string_literal(label)))
+    return filter_elements(
+        XPathSelector(browser,
+                      field_xpath(field_type, 'id') %
+                      '//label[contains(., {0})]/@for'.format(
+                          string_literal(label))),
+        displayed=True,
+    )
 
 
 def option_in_select(browser, select_name, option):
