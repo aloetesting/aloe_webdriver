@@ -160,10 +160,10 @@ class XPathSelector(object):
         return len(self._elements())
 
     def __getitem__(self, key):
-        return self._elements()[key]
+        return self._elements()[key]  # pylint:disable=unsubscriptable-object
 
     def __iter__(self):
-        for el in self._elements():
+        for el in self._elements():  # pylint:disable=not-an-iterable
             yield el
 
     def __nonzero__(self):
@@ -358,7 +358,7 @@ def find_field_by_value(browser, field_type, name):
                        key=lambda elem: len(elem.get_attribute('value')))
 
     if elems:
-        elems = [elems[0]]
+        elems = [elems[0]]  # pylint:disable=redefined-variable-type
 
     return XPathSelector(browser, elements=elems)
 

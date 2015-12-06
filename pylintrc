@@ -17,6 +17,8 @@ disable=
     too-many-public-methods,
     too-many-lines,
     unused-argument,
+    wrong-import-order,
+    wrong-import-position,
     RP0101,
     RP0401,
     RP0402,
