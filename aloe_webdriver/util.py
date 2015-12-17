@@ -11,6 +11,7 @@ from builtins import str
 # pylint:enable=redefined-builtin
 
 import operator
+from copy import copy
 from time import time, sleep
 
 try:
@@ -48,32 +49,6 @@ def string_literal(content):
     return content
 
 
-def filter_elements(elements, displayed=False, enabled=False):
-    """
-    Filter elements by visibility and enabled status.
-
-    :param elements: an :class:`ElementSelector` of elements to filter
-    :param displayed: whether to filter out invisible elements
-    :param enabled: whether to filter out disabled elements
-
-    Returns: an :class:`ElementSelector`
-    """
-
-    if displayed:
-        elements = ElementSelector(
-            elements.browser,
-            elements=[e for e in elements if e.is_displayed()]
-        )
-
-    if enabled:
-        elements = ElementSelector(
-            elements.browser,
-            elements=[e for e in elements if e.is_enabled()]
-        )
-
-    return elements
-
-
 class ElementSelector(object):
     """
     A set of elements on a page matching an XPath query.
@@ -81,6 +56,8 @@ class ElementSelector(object):
     :param browser: ``world.browser``
     :param str xpath: XPath query
     :param list elements: list of :class:`selenium.WebElement` objects
+    :param bool filter_displayed: whether to only return displayed elements
+    :param bool filter_enabled: whether to only return enabled elements
 
     Delays evaluation to batch the queries together, allowing operations on
     selectors (e.g. union) to be performed first, and then issuing as few
@@ -97,7 +74,8 @@ class ElementSelector(object):
     together.
     """
 
-    def __init__(self, browser, xpath=None, elements=None):
+    def __init__(self, browser, xpath=None, elements=None,
+                 filter_displayed=False, filter_enabled=False):
         """
         Initialise the selector.
 
@@ -115,17 +93,69 @@ class ElementSelector(object):
         else:
             self._elements_cached = elements
 
+        self.filter_displayed = filter_displayed
+        self.filter_enabled = filter_enabled
+
+    @property
+    def evaluated(self):
+        """Whether the selector has already been evaluated."""
+
+        return hasattr(self, '_elements_cached')
+
+    def filter(self, displayed=False, enabled=False):
+        """
+        Filter elements by visibility and enabled status.
+
+        :param displayed: whether to filter out invisible elements
+        :param enabled: whether to filter out disabled elements
+
+        Returns: an :class:`ElementSelector`
+        """
+
+        if self.evaluated:
+            # Filter elements one by one
+            result = self
+
+            if displayed:
+                result = ElementSelector(
+                    result.browser,
+                    elements=[e for e in result if e.is_displayed()]
+                )
+
+            if enabled:
+                result = ElementSelector(
+                    result.browser,
+                    elements=[e for e in result if e.is_enabled()]
+                )
+
+        else:
+            result = copy(self)
+            if displayed:
+                result.displayed = True
+            if enabled:
+                result.enabled = True
+
+        return result
+
     def _select(self):
-        """
-        Fetch the elements from the browser.
-        """
-        return self.browser.find_elements_by_xpath(self.xpath)
+        """Fetch the elements from the browser."""
+
+        for element in self.browser.find_elements_by_xpath(self.xpath):
+            if self.filter_displayed:
+                if not element.is_displayed():
+                    continue
+
+            if self.filter_enabled:
+                if not element.is_enabled():
+                    continue
+
+            yield element
 
     def _elements(self):
         """
         The cached list of elements.
         """
-        if not hasattr(self, '_elements_cached'):
+        if not self.evaluated:
             setattr(self, '_elements_cached', list(self._select()))
         return self._elements_cached
 
@@ -136,12 +166,18 @@ class ElementSelector(object):
         Where possible, avoid evaluating either selector to batch queries.
         """
 
-        if not hasattr(self, '_elements_cached') \
+        if not self.evaluated \
                 and isinstance(other, ElementSelector) \
-                and not hasattr(other, '_elements_cached'):
+                and not other.evaluated \
+                and self.filter_displayed == other.filter_displayed \
+                and self.filter_enabled == other.filter_enabled:
             # Both summands are delayed, return a new delayed selector
-            return ElementSelector(self.browser,
-                                   xpath=self.xpath + '|' + other.xpath)
+            return ElementSelector(
+                self.browser,
+                xpath=self.xpath + '|' + other.xpath,
+                filter_displayed=self.filter_displayed,
+                filter_enabled=self.filter_enabled,
+            )
         else:
             # Have to evaluate everything now
             # other can be either an already evaluated ElementSelector, a list
@@ -314,8 +350,11 @@ def find_field_by_id(browser, field_type, id):
 
     Returns: an :class:`ElementSelector`
     """
-    return ElementSelector(browser,
-                           field_xpath(field_type, 'id') % string_literal(id))
+    return ElementSelector(
+        browser,
+        xpath=field_xpath(field_type, 'id') % string_literal(id),
+        filter_displayed=True,
+    )
 
 
 def find_field_by_name(browser, field_type, name):
@@ -328,9 +367,12 @@ def find_field_by_name(browser, field_type, name):
 
     Returns: an :class:`ElementSelector`
     """
-    return ElementSelector(browser,
-                           field_xpath(field_type, 'name') %
-                           string_literal(name))
+    return ElementSelector(
+        browser,
+        field_xpath(field_type, 'name') %
+        string_literal(name),
+        filter_displayed=True,
+    )
 
 
 def find_field_by_value(browser, field_type, name):
@@ -344,10 +386,11 @@ def find_field_by_value(browser, field_type, name):
     Returns: an :class:`ElementSelector`
     """
     xpath = field_xpath(field_type, 'value') % string_literal(name)
-    elems = filter_elements(
-        ElementSelector(browser, str(xpath)),
-        displayed=True,
-        enabled=True,
+    elems = ElementSelector(
+        browser,
+        xpath=str(xpath),
+        filter_displayed=True,
+        filter_enabled=True,
     )
 
     # sort by shortest first (most closely matching)
@@ -378,12 +421,12 @@ def find_field_by_label(browser, field_type, label):
     Returns: an :class:`ElementSelector`
     """
 
-    return filter_elements(
-        ElementSelector(browser,
-                        field_xpath(field_type, 'id') %
-                        '//label[contains(., {0})]/@for'.format(
-                            string_literal(label))),
-        displayed=True,
+    return ElementSelector(
+        browser,
+        xpath=field_xpath(field_type, 'id') %
+        '//label[contains(., {0})]/@for'.format(
+            string_literal(label)),
+        filter_displayed=True,
     )
 
 
