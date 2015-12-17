@@ -6,6 +6,8 @@ from aloe.testing import FeatureTest
 
 from aloe_webdriver.tests.base import feature, PAGES
 
+# pylint:disable=line-too-long
+
 
 class TestUtil(FeatureTest):
     """Test steps."""
@@ -45,7 +47,7 @@ Feature: I should see a link containing
         When I go to "{page}"
         Then The browser's URL should contain "file://"
         And I should see a link that contains the text "Goo" and the url "http://google.com/"
-        """   # noqa
+        """
 
         return dict(page=PAGES['basic_page'])
 

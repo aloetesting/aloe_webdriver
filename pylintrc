@@ -29,3 +29,6 @@ disable=
 function-rgx=[a-z_][a-z0-9_]{2,50}$|test_[a-zA-Z_][a-zA-Z0-9_]{2,100}$|setUp$|tearDown$
 method-rgx=[a-z_][a-z0-9_]{2,30}$|test_[a-zA-Z_][a-zA-Z0-9_]{2,100}$
 attr-rgx=[a-z_][a-z0-9_]{2,30}$|maxDiff$
+
+[FORMAT]
+max-line-length=80

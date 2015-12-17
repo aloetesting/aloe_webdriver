@@ -74,7 +74,7 @@ class ElementSelector(object):
     together.
     """
 
-    def __init__(self, browser, xpath=None, elements=None,
+    def __init__(self, browser, xpath=None, elements=None,  # pylint:disable=too-many-arguments
                  filter_displayed=False, filter_enabled=False):
         """
         Initialise the selector.
