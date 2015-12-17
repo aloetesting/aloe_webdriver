@@ -52,21 +52,21 @@ def filter_elements(elements, displayed=False, enabled=False):
     """
     Filter elements by visibility and enabled status.
 
-    :param elements: an :class:`XPathSelector` of elements to filter
+    :param elements: an :class:`ElementSelector` of elements to filter
     :param displayed: whether to filter out invisible elements
     :param enabled: whether to filter out disabled elements
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
 
     if displayed:
-        elements = XPathSelector(
+        elements = ElementSelector(
             elements.browser,
             elements=[e for e in elements if e.is_displayed()]
         )
 
     if enabled:
-        elements = XPathSelector(
+        elements = ElementSelector(
             elements.browser,
             elements=[e for e in elements if e.is_enabled()]
         )
@@ -74,7 +74,7 @@ def filter_elements(elements, displayed=False, enabled=False):
     return elements
 
 
-class XPathSelector(object):
+class ElementSelector(object):
     """
     A set of elements on a page matching an XPath query.
 
@@ -137,21 +137,21 @@ class XPathSelector(object):
         """
 
         if not hasattr(self, '_elements_cached') \
-                and isinstance(other, XPathSelector) \
+                and isinstance(other, ElementSelector) \
                 and not hasattr(other, '_elements_cached'):
             # Both summands are delayed, return a new delayed selector
-            return XPathSelector(self.browser,
-                                 xpath=self.xpath + '|' + other.xpath)
+            return ElementSelector(self.browser,
+                                   xpath=self.xpath + '|' + other.xpath)
         else:
             # Have to evaluate everything now
-            # other can be either an already evaluated XPathSelector, a list or
-            # a single element
+            # other can be either an already evaluated ElementSelector, a list
+            # or a single element
             try:
                 other = list(other)
             except TypeError:
                 other = [other]
 
-            return XPathSelector(self.browser, elements=list(self) + other)
+            return ElementSelector(self.browser, elements=list(self) + other)
 
     # The class behaves as a container for the elements, fetching the list from
     # the browser on the first attempt to enumerate itself.
@@ -185,17 +185,17 @@ class XPathSelector(object):
 
 def element_id_by_label(browser, label):
     """
-    Return an :class:`XPathSelector` for the element referenced by a `label`s
+    Return an :class:`ElementSelector` for the element referenced by a `label`s
     ``for`` attribute. The label must be visible.
 
     :param browser: ``world.browser``
     :param label: label text to return the referenced element for.
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
-    label = XPathSelector(browser,
-                          str('//label[contains(., %s)]' %
-                              string_literal(label)))
+    label = ElementSelector(browser,
+                            str('//label[contains(., %s)]' %
+                                string_literal(label)))
     if not label:
         return False
     return label.get_attribute('for')
@@ -230,7 +230,7 @@ def find_button(browser, value):
 
     Searches for `submit`, `reset`, `button` and `image` buttons.
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
     field_types = (
         'submit',
@@ -277,7 +277,7 @@ def find_field(browser, field_type, value):
     This first looks for `value` as the id of the element, else
     the name of the element, else as a label for the element.
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
     return find_field_by_id(browser, field_type, value) + \
         find_field_by_name(browser, field_type, value) + \
@@ -292,7 +292,7 @@ def find_any_field(browser, field_types, field_name):
     :param list field_types: a list of field type (i.e. `button`)
     :param string value: an id, name or label
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
 
     See also: :func:`find_field`.
     """
@@ -312,10 +312,10 @@ def find_field_by_id(browser, field_type, id):
     :param string field_type: a field type (i.e. `button`)
     :param string id: ``id`` attribute
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
-    return XPathSelector(browser,
-                         field_xpath(field_type, 'id') % string_literal(id))
+    return ElementSelector(browser,
+                           field_xpath(field_type, 'id') % string_literal(id))
 
 
 def find_field_by_name(browser, field_type, name):
@@ -326,11 +326,11 @@ def find_field_by_name(browser, field_type, name):
     :param string field_type: a field type (i.e. `button`)
     :param string name: ``name`` attribute
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
-    return XPathSelector(browser,
-                         field_xpath(field_type, 'name') %
-                         string_literal(name))
+    return ElementSelector(browser,
+                           field_xpath(field_type, 'name') %
+                           string_literal(name))
 
 
 def find_field_by_value(browser, field_type, name):
@@ -341,11 +341,11 @@ def find_field_by_value(browser, field_type, name):
     :param string field_type: a field type (i.e. `button`)
     :param string name: ``value`` attribute
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
     xpath = field_xpath(field_type, 'value') % string_literal(name)
     elems = filter_elements(
-        XPathSelector(browser, str(xpath)),
+        ElementSelector(browser, str(xpath)),
         displayed=True,
         enabled=True,
     )
@@ -360,7 +360,7 @@ def find_field_by_value(browser, field_type, name):
     if elems:
         elems = [elems[0]]  # pylint:disable=redefined-variable-type
 
-    return XPathSelector(browser, elements=elems)
+    return ElementSelector(browser, elements=elems)
 
 
 def find_field_by_label(browser, field_type, label):
@@ -375,14 +375,14 @@ def find_field_by_label(browser, field_type, label):
     name. It then pulls the id out of the 'for' attribute, and uses it to
     locate the element by its id.
 
-    Returns: an :class:`XPathSelector`
+    Returns: an :class:`ElementSelector`
     """
 
     return filter_elements(
-        XPathSelector(browser,
-                      field_xpath(field_type, 'id') %
-                      '//label[contains(., {0})]/@for'.format(
-                          string_literal(label))),
+        ElementSelector(browser,
+                        field_xpath(field_type, 'id') %
+                        '//label[contains(., {0})]/@for'.format(
+                            string_literal(label))),
         displayed=True,
     )
 
