@@ -10,12 +10,14 @@ class TestCSS(FeatureTest):
 
     @feature()
     def test_css_match(self):
+        # pylint:disable=line-too-long
         """
 Feature: Wait and match CSS
     Scenario: Everything fires up
         When I go to "{page}"
         Then There should be an element matching $("textarea[name='bio']") within 1 second
-        """  # noqa
+        """
+        # pylint:enable=line-too-long
 
         return dict(page=PAGES['basic_page'])
 
