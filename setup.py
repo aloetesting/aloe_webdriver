@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 'npilon@gmail.com,',
                 'ben@groovie.org',
             )),
-            url="https://github.com/koterpillar/aloe_webdriver/",
+            url="https://github.com/aloetesting/aloe_webdriver/",
             long_description=readme.read(),
             classifiers=[
                 'License :: OSI Approved :: MIT License',
