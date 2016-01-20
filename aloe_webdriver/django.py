@@ -1,7 +1,7 @@
 """
 Django-specific extensions for use with aloe_django_.
 
-.. _aloe_django: https://github.com/koterpillar/aloe_django
+.. _aloe_django: https://github.com/aloetesting/aloe_django
 """
 
 from __future__ import unicode_literals

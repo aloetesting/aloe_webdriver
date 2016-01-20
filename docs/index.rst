@@ -37,8 +37,8 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _aloe: https://github.com/koterpillar/aloe
-.. _aloe_django: https://github.com/koterpillar/aloe_django
+.. _aloe: https://github.com/aloetesting/aloe
+.. _aloe_django: https://github.com/aloetesting/aloe_django
 .. _lettuce_webdriver: https://github.com/bbangert/lettuce_webdriver
 .. _lettuce: http://lettuce.it/
 .. _selenium: http://selenium-python.readthedocs.org/
