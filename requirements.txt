@@ -1,4 +1,4 @@
 aloe
 future>=0.15
 nose
-selenium
+selenium>=2.50.1
