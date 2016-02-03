@@ -228,7 +228,7 @@ def element_focused(self, id_):
 
     elem = world.browser.find_element_by_xpath(
         str('id("{id}")'.format(id=id_)))
-    focused = world.browser.switch_to_active_element()
+    focused = world.browser.switch_to.active_element
 
     assert_true(elem == focused)
 
@@ -241,7 +241,7 @@ def element_not_focused(self, id_):
 
     elem = world.browser.find_element_by_xpath(
         str('id("{id}")'.format(id=id_)))
-    focused = world.browser.switch_to_active_element()
+    focused = world.browser.switch_to.active_element
 
     # Elements don't have __ne__ defined, cannot test for inequality
     assert_false(elem == focused)
@@ -707,10 +707,10 @@ def press_by_tooltip(self, tooltip):
 def switch_to_frame(self, frame):
     """Swap Selenium's context to the given frame or iframe."""
     elem = world.browser.find_element_by_id(frame)
-    world.browser.switch_to_frame(elem)
+    world.browser.switch_to.frame(elem)
 
 
 @step(r'I switch back to the main view')
 def switch_to_main(self):
     """Swap Selenium's context back to the main window."""
-    world.browser.switch_to_default_content()
+    world.browser.switch_to.default_content()
