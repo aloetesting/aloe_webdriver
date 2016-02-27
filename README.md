@@ -1,6 +1,10 @@
 Aloe steps for Web Testing with Selenium
 ========================================
 
+[![Build status](https://img.shields.io/travis/aloetesting/aloe_webdriver.svg)](https://travis-ci.org/aloetesting/aloe_webdriver)
+[![Coverage](https://img.shields.io/coveralls/aloetesting/aloe_webdriver.svg)](https://coveralls.io/github/aloetesting/aloe_webdriver)
+[![PyPI](https://img.shields.io/pypi/v/aloe_webdriver.svg)](https://pypi.python.org/pypi/aloe_webdriver)
+
 A set of [Gherkin][gherkin] steps for use with [Aloe][aloe] to test Web
 applications using Selenium.
 
