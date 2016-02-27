@@ -12,14 +12,20 @@ before_install:
 install:
     - pip install -r requirements.txt
     - pip install -r test_requirements.txt
+    - pip install coveralls
 
 # command to run tests
 script:
     - pep8 .
     - pylint aloe_webdriver setup.py
-    - nosetests
+    - coverage erase
+    - coverage run -m nose
+    - coverage report
     - ./tools/check_installs
     - make -C docs coverage
+
+after_success:
+    - coveralls
 
 deploy:
     provider: pypi

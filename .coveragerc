@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = aloe_webdriver
+omit =
+    aloe_webdriver/tests/*
+    aloe_webdriver/tests/features/*
+    aloe_webdriver/webdriver.py
