@@ -18,7 +18,7 @@ Install:
 Read the [documentation][documentation].
 
 License
-=======
+-------
 
 The MIT License (MIT)
 
