@@ -6,12 +6,12 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
+import os
 import unittest
 
 from selenium import webdriver
 
 from aloe import world
-from aloe_webdriver.tests.base import PAGES
 from aloe_webdriver.util import (
     find_button,
     find_field,
@@ -31,7 +31,11 @@ class TestUtil(unittest.TestCase):
         world.browser = webdriver.Firefox()
 
     def setUp(self):
-        world.browser.get(PAGES['basic_page'])
+        world.browser.get(
+            'file://' +
+            os.path.join(os.path.dirname(__file__),
+                         'html_pages', 'basic_page.html')
+        )
 
     @classmethod
     def tearDownClass(cls):

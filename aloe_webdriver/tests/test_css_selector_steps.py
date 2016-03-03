@@ -12,7 +12,7 @@ class TestCSS(FeatureTest):
     def test_css_match(self):
         # pylint:disable=line-too-long
         """
-        When I go to "{basic_page}"
+        When I visit test page "basic_page"
         Then There should be an element matching $("textarea[name='bio']") within 1 second
         """
         # pylint:enable=line-too-long
@@ -20,7 +20,7 @@ class TestCSS(FeatureTest):
     @feature()
     def test_forms(self):
         """
-        When I go to "{basic_page}"
+        When I visit test page "basic_page"
         Then I fill in $("input[name='user']") with "A test string"
         And I check $("input[value='Bike']")
         """
