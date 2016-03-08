@@ -9,7 +9,7 @@ from aloe_webdriver.tests.base import feature
 # pylint:disable=line-too-long
 
 
-class TestUtil(FeatureTest):
+class TestSteps(FeatureTest):
     """Test steps."""
 
     @feature()
