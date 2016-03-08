@@ -48,6 +48,7 @@ class TestUtil(FeatureTest):
         Then I should be at "http://0.0.0.0:7755/link_dest.html"
         And The browser's URL should be "http://0.0.0.0:7755/link_dest.html"
         And The browser's URL should not contain "irrelevant things"
+        And I should see "Link destination page"
         """
 
     @feature()
@@ -136,17 +137,17 @@ class TestUtil(FeatureTest):
         """
         When I visit test page "basic_page"
         Then I should see an element with id of "bio_field"
-        And I should see an element with id of "somediv" within 2 seconds
+        And I should see an element with id of "somediv"
         And I should not see an element with id of "hidden_text"
-        And I should see "Weeeee" within 1 second
+        And I should see "Weeeee"
         """
 
     @feature(fails=True)
     def test_hidden_text_2(self):
         """
         When I visit test page "basic_page"
-        Then I should see "Hello there" within 1 second
-        And I should see an element with id of "oops_field" within 1 second
+        Then I should see "Hello there"
+        And I should see an element with id of "oops_field"
         And I should not see an element with id of "hidden_text"
         """
 

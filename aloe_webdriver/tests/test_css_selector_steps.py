@@ -13,7 +13,7 @@ class TestCSS(FeatureTest):
         # pylint:disable=line-too-long
         """
         When I visit test page "basic_page"
-        Then There should be an element matching $("textarea[name='bio']") within 1 second
+        Then There should be an element matching $("textarea[name='bio']")
         """
         # pylint:enable=line-too-long
 
