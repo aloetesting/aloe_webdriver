@@ -448,6 +448,10 @@ def option_in_select(browser, select_name, option):
         return None
 
 
+TIMEOUT = 15
+CHECK_EVERY = 0.2
+
+
 def wait_for(func):
     """
     A decorator to invoke a function periodically until it returns a truthy
@@ -458,7 +462,7 @@ def wait_for(func):
     """
 
     def wrapped(*args, **kwargs):
-        timeout = kwargs.pop('timeout', 15)
+        timeout = kwargs.pop('timeout', TIMEOUT)
 
         start = time()
         result = None
@@ -467,8 +471,35 @@ def wait_for(func):
             result = func(*args, **kwargs)
             if result:
                 break
-            sleep(0.2)
+            sleep(CHECK_EVERY)
 
         return result
+
+    return wrapped
+
+
+def wait_for_test(func):
+    """
+    A decorator to invoke a function, retrying on assertion errors for a
+    specified time interval.
+
+    Adds a kwarg `timeout` to `func` which is a number of seconds to try
+    for (default 15).
+    """
+
+    def wrapped(*args, **kwargs):
+        timeout = kwargs.pop('timeout', TIMEOUT)
+
+        start = time()
+
+        while True:
+            try:
+                return func(*args, **kwargs)
+            except AssertionError:
+                if time() - start < timeout:
+                    sleep(CHECK_EVERY)
+                    continue
+                else:
+                    raise
 
     return wrapped

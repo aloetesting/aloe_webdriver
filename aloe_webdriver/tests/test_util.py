@@ -8,6 +8,7 @@ from __future__ import absolute_import
 
 import os
 import unittest
+from time import time
 
 from selenium import webdriver
 
@@ -20,6 +21,7 @@ from aloe_webdriver.util import (
     find_field_by_name,
     option_in_select,
     wait_for,
+    wait_for_test,
 )
 
 # pylint:disable=missing-docstring
@@ -86,3 +88,29 @@ class TestUtil(unittest.TestCase):
         # wait_for decorator parses the argument
         assert not lazy_function(10, timeout=1)
         assert lazy_function(5, timeout=1)
+
+    def test_wait_for_test(self):
+        """
+        Test that wait_for_test retries on assertion errors.
+        """
+
+        start_time = time()
+
+        @wait_for_test
+        def seconds_passed(seconds):
+            """
+            Test that at least the given number of seconds passed since the
+            start of the test.
+            """
+
+            assert time() - start_time >= seconds
+            return True
+
+        # pylint:disable=unexpected-keyword-arg
+        # wait_for decorator parses the argument
+
+        with self.assertRaises(AssertionError):
+            seconds_passed(3, timeout=1)
+
+        start_time = time()
+        assert seconds_passed(3, timeout=5)
