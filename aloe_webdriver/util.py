@@ -291,7 +291,7 @@ def find_field_with_value(browser, field, value):
 def find_option(browser, select_name, option_name):
     # First, locate the select
     select_box = find_field(browser, 'select', select_name)
-    assert select_box
+    assert select_box, "Cannot find a '{}' select.".format(select_name)
 
     # Now locate the option
     option_box = find_field(select_box, 'option', option_name)
@@ -439,7 +439,7 @@ def option_in_select(browser, select_name, option):
     """
 
     select = find_field(browser, 'select', select_name)
-    assert select
+    assert select, "Cannot find a '{}' select.".format(select_name)
 
     try:
         return select.find_element_by_xpath(str(
