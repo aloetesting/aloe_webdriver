@@ -454,32 +454,6 @@ CHECK_EVERY = 0.2
 
 def wait_for(func):
     """
-    A decorator to invoke a function periodically until it returns a truthy
-    value.
-
-    Adds a kwarg `timeout` to `func` which is a number of seconds to try
-    for (default 15).
-    """
-
-    def wrapped(*args, **kwargs):
-        timeout = kwargs.pop('timeout', TIMEOUT)
-
-        start = time()
-        result = None
-
-        while time() - start < timeout:
-            result = func(*args, **kwargs)
-            if result:
-                break
-            sleep(CHECK_EVERY)
-
-        return result
-
-    return wrapped
-
-
-def wait_for_test(func):
-    """
     A decorator to invoke a function, retrying on assertion errors for a
     specified time interval.
 

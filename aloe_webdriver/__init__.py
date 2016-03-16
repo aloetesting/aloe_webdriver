@@ -19,7 +19,7 @@ from aloe_webdriver.util import (
     find_field,
     find_option,
     option_in_select,
-    wait_for_test,
+    wait_for,
     string_literal,
 )
 
@@ -79,21 +79,21 @@ def visit(self, url):
 
 @step('The browser\'s URL should be "([^"]*)"$')
 @step('I should be at "([^"]*)"$')
-@wait_for_test
+@wait_for
 def url_should_be(self, url):
     """Assert the absolute URL of the browser is as provided."""
     assert_equal(url, world.browser.current_url)
 
 
 @step('''The browser's URL should contain "([^"]*)"$''')
-@wait_for_test
+@wait_for
 def url_should_contain(self, url):
     """Assert the absolute URL of the browser contains the provided."""
     assert_in(url, world.browser.current_url)
 
 
 @step('''The browser's URL should not contain "([^"]*)"$''')
-@wait_for_test
+@wait_for
 def url_should_not_contain(self, url):
     """Assert the absolute URL of the browser does not contain the provided."""
     assert_not_in(url, world.browser.current_url)
@@ -101,7 +101,7 @@ def url_should_not_contain(self, url):
 
 @step(r'The page title should be "([^"]*)"')
 @step(r"The page title should be '([^']*)'")
-@wait_for_test
+@wait_for
 def page_title(self, title):
     """
     Assert the page title matches the given text.
@@ -113,7 +113,7 @@ def page_title(self, title):
 
 @step('I click "([^"]*)"$')
 @step("I click '([^']*)'$")
-@wait_for_test
+@wait_for
 def click(self, name):
     """Click the link with the provided link text."""
     try:
@@ -125,7 +125,7 @@ def click(self, name):
 
 
 @step('I should see a link with the url "([^"]*)"$')
-@wait_for_test
+@wait_for
 def should_see_link(self, link_url):
     """Assert a link with the provided URL is visible on the page."""
 
@@ -138,7 +138,7 @@ def should_see_link(self, link_url):
 
 @step('I should see a link to "([^"]*)" with the url "([^"]*)"$')
 @step("I should see a link to '([^']*)' with the url '([^']*)'$")
-@wait_for_test
+@wait_for
 def should_see_link_text(self, link_text, link_url):
     """Assert a link with the provided text points to the provided URL."""
 
@@ -153,7 +153,7 @@ def should_see_link_text(self, link_text, link_url):
       'the url "([^"]*)"$')
 @step("I should see a link that contains the text '([^']*)' and "
       "the url '([^']*)'$")
-@wait_for_test
+@wait_for
 def should_include_link_text(self, link_text, link_url):
     """
     Assert a link containing the provided text points to the provided URL.
@@ -172,7 +172,7 @@ def should_include_link_text(self, link_text, link_url):
 
 @step('The element with id of "([^"]*)" contains "([^"]*)"$')
 @step("The element with id of '([^']*)' contains '([^']*)'$")
-@wait_for_test
+@wait_for
 def element_contains(self, element_id, value):
     """
     Assert provided content is contained within an element found by ``id``.
@@ -188,7 +188,7 @@ def element_contains(self, element_id, value):
 
 @step('The element with id of "([^"]*)" does not contain "([^"]*)"$')
 @step("The element with id of '([^']*)' does not contain '([^']*)'$")
-@wait_for_test
+@wait_for
 def element_not_contains(self, element_id, value):
     """
     Assert provided content is not contained within an element found by ``id``.
@@ -206,8 +206,8 @@ def should_see_id_in_seconds(self, element_id, timeout):
     """
 
     # pylint:disable=unexpected-keyword-arg
-    # wait_for_test decorator parses the argument
-    wait_for_test(lambda: assert_true(ElementSelector(
+    # wait_for decorator parses the argument
+    wait_for(lambda: assert_true(ElementSelector(
         world.browser,
         'id("%s")' % element_id,
         filter_displayed=True,
@@ -215,7 +215,7 @@ def should_see_id_in_seconds(self, element_id, timeout):
 
 
 @step('I should see an element with id of "([^"]*)"$')
-@wait_for_test
+@wait_for
 def should_see_id(self, element_id):
     """
     Assert an element with the given ``id`` is visible.
@@ -229,7 +229,7 @@ def should_see_id(self, element_id):
 
 
 @step('I should not see an element with id of "([^"]*)"$')
-@wait_for_test
+@wait_for
 def should_not_see_id(self, element_id):
     """
     Assert an element with the given ``id`` is not visible.
@@ -243,7 +243,7 @@ def should_not_see_id(self, element_id):
 
 
 @step(r'Element with id "([^"]*)" should be focused')
-@wait_for_test
+@wait_for
 def element_focused(self, id_):
     """
     Assert the element is focused.
@@ -260,7 +260,7 @@ def element_focused(self, id_):
 
 
 @step(r'Element with id "([^"]*)" should not be focused')
-@wait_for_test
+@wait_for
 def element_not_focused(self, id_):
     """
     Assert the element is not focused.
@@ -291,8 +291,8 @@ def should_see_in_seconds(self, text, timeout):
     block and inline nodes. Whitespace can be affected.
     """
     # pylint:disable=unexpected-keyword-arg
-    # wait_for_test decorator parses the argument
-    wait_for_test(
+    # wait_for decorator parses the argument
+    wait_for(
         lambda: assert_true(contains_content(world.browser, text)),
         timeout=int(timeout),
     )
@@ -302,7 +302,7 @@ def should_see_in_seconds(self, text, timeout):
 @step("I should see '([^']+)'$")
 @step('I see "([^"]+)"$')
 @step("I see '([^']+)'$")
-@wait_for_test
+@wait_for
 def should_see(self, text):
     """
     Assert provided text is visible.
@@ -316,7 +316,7 @@ def should_see(self, text):
 
 @step('I should not see "([^"]+)"$')
 @step("I should not see '([^']+)'$")
-@wait_for_test
+@wait_for
 def should_not_see(self, text):
     """
     Assert provided text is not visible.
@@ -331,7 +331,7 @@ def should_not_see(self, text):
 
 
 @step('I should see a form that goes to "([^"]*)"$')
-@wait_for_test
+@wait_for
 def see_form(self, url):
     """
     Assert the existence of a HTML form that submits to the given URL.
@@ -369,7 +369,7 @@ TEXT_FIELDS = (
 
 @step('I fill in "([^"]*)" with "([^"]*)"$')
 @step("I fill in '([^']*)' with '([^']*)'$")
-@wait_for_test
+@wait_for
 def fill_in_textfield(self, field_name, value):
     """
     Fill in the HTML input with given label (recommended), name or id with
@@ -402,7 +402,7 @@ def fill_in_textfield(self, field_name, value):
 
 @step('I press "([^"]*)"$')
 @step("I press '([^']*)'$")
-@wait_for_test
+@wait_for
 def press_button(self, value):
     """
     Click the button with the given label.
@@ -415,7 +415,7 @@ def press_button(self, value):
 
 @step('I click on label "([^"]*)"')
 @step("I click on label '([^']*)'")
-@wait_for_test
+@wait_for
 def click_on_label(self, label):
     """
     Click on the given label.
@@ -434,7 +434,7 @@ def click_on_label(self, label):
 
 @step(r'Input "([^"]*)" (?:has|should have) value "([^"]*)"')
 @step(r"Input '([^']*)' (?:has|should have) value '([^']*)'")
-@wait_for_test
+@wait_for
 def input_has_value(self, field_name, value):
     """
     Assert the form input with label (recommended), name or id has given value.
@@ -448,7 +448,7 @@ def input_has_value(self, field_name, value):
 
 
 @step(r'I submit the only form')
-@wait_for_test
+@wait_for
 def submit_the_only_form(self):
     """
     Look for a form on the page and submit it.
@@ -461,7 +461,7 @@ def submit_the_only_form(self):
 
 
 @step(r'I submit the form with id "([^"]*)"')
-@wait_for_test
+@wait_for
 def submit_form_id(self, id_):
     """
     Submit the form with given id (used to disambiguate between multiple
@@ -495,7 +495,7 @@ def submit_form_action(self, url):
 
 @step('I check "([^"]*)"$')
 @step("I check '([^']*)'$")
-@wait_for_test
+@wait_for
 def check_checkbox(self, value):
     """Check the checkbox with label (recommended), name or id."""
     check_box = find_field(world.browser, 'checkbox', value)
@@ -506,7 +506,7 @@ def check_checkbox(self, value):
 
 @step('I uncheck "([^"]*)"$')
 @step("I uncheck '([^']*)'$")
-@wait_for_test
+@wait_for
 def uncheck_checkbox(self, value):
     """Uncheck the checkbox with label (recommended), name or id."""
     check_box = find_field(world.browser, 'checkbox', value)
@@ -517,7 +517,7 @@ def uncheck_checkbox(self, value):
 
 @step('The "([^"]*)" checkbox should be checked$')
 @step("The '([^']*)' checkbox should be checked$")
-@wait_for_test
+@wait_for
 def assert_checked_checkbox(self, value):
     """Assert the checkbox with label (recommended), name or id is checked."""
     check_box = find_field(world.browser, 'checkbox', value)
@@ -527,7 +527,7 @@ def assert_checked_checkbox(self, value):
 
 @step('The "([^"]*)" checkbox should not be checked$')
 @step("The '([^']*)' checkbox should not be checked$")
-@wait_for_test
+@wait_for
 def assert_not_checked_checkbox(self, value):
     """
     Assert the checkbox with label (recommended), name or id is not checked.
@@ -542,7 +542,7 @@ def assert_not_checked_checkbox(self, value):
 
 @step('I select "([^"]*)" from "([^"]*)"$')
 @step("I select '([^']*)' from '([^']*)'$")
-@wait_for_test
+@wait_for
 def select_single_item(self, option_name, select_name):
     """
     Select the named option from select with label (recommended), name or id.
@@ -554,7 +554,7 @@ def select_single_item(self, option_name, select_name):
 
 @step('I select the following from "([^"]*?)":?$')
 @step("I select the following from '([^']*?)':?$")
-@wait_for_test
+@wait_for
 def select_multi_items(self, select_name):
     """
     Select multiple options from select with label (recommended), name, or
@@ -589,7 +589,7 @@ def select_multi_items(self, select_name):
 
 @step('The "([^"]*)" option from "([^"]*)" should be selected$')
 @step("The '([^']*)' option from '([^']*)' should be selected$")
-@wait_for_test
+@wait_for
 def assert_single_selected(self, option_name, select_name):
     """
     Assert the given option is selected from the select with label
@@ -603,7 +603,7 @@ def assert_single_selected(self, option_name, select_name):
 
 @step('The following options from "([^"]*?)" should be selected:?$')
 @step("The following options from '([^']*?)' should be selected:?$")
-@wait_for_test
+@wait_for
 def assert_multi_selected(self, select_name):
     select_box = find_field(world.browser, 'select', select_name)
     assert select_box, "Cannot find a '{}' select.".format(select_name)
@@ -624,7 +624,7 @@ def assert_multi_selected(self, select_name):
 
 @step(r'I should see option "([^"]*)" in selector "([^"]*)"')
 @step(r"I should see option '([^']*)' in selector '([^']*)'")
-@wait_for_test
+@wait_for
 def select_contains(self, option, id_):
     """Assert the select contains the given option."""
     assert_true(option_in_select(world.browser, id_, option) is not None)
@@ -632,7 +632,7 @@ def select_contains(self, option, id_):
 
 @step(r'I should not see option "([^"]*)" in selector "([^"]*)"')
 @step(r"I should not see option '([^']*)' in selector '([^']*)'")
-@wait_for_test
+@wait_for
 def select_does_not_contain(self, option, id_):
     """Assert the select does not contain the given option."""
     assert_true(option_in_select(world.browser, id_, option) is None)
@@ -643,7 +643,7 @@ def select_does_not_contain(self, option, id_):
 
 @step('I choose "([^"]*)"$')
 @step("I choose '([^']*)'$")
-@wait_for_test
+@wait_for
 def choose_radio(self, value):
     """
     Click (and choose) the radio button with the given label (recommended),
@@ -656,7 +656,7 @@ def choose_radio(self, value):
 
 @step('The "([^"]*)" option should be chosen$')
 @step("The '([^']*)' option should be chosen$")
-@wait_for_test
+@wait_for
 def assert_radio_selected(self, value):
     """
     Assert the radio button with the given label (recommended), name or id is
@@ -669,7 +669,7 @@ def assert_radio_selected(self, value):
 
 @step('The "([^"]*)" option should not be chosen$')
 @step("The '([^']*)' option should not be chosen$")
-@wait_for_test
+@wait_for
 def assert_radio_not_selected(self, value):
     """
     Assert the radio button with the given label (recommended), name or id is
@@ -762,7 +762,7 @@ def find_by_tooltip(browser, tooltip):
 
 @step(r'I should see an element with tooltip "([^"]*)"')
 @step(r"I should see an element with tooltip '([^']*)'")
-@wait_for_test
+@wait_for
 def see_tooltip(self, tooltip):
     """
     Assert an element with the given tooltip (title) is visible.
@@ -775,7 +775,7 @@ def see_tooltip(self, tooltip):
 
 @step(r'I should not see an element with tooltip "([^"]*)"')
 @step(r"I should not see an element with tooltip '([^']*)'")
-@wait_for_test
+@wait_for
 def no_see_tooltip(self, tooltip):
     """
     Assert an element with the given tooltip (title) is not visible.

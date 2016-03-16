@@ -20,7 +20,7 @@ from aloe import step
 from aloe import world
 
 from aloe_webdriver.util import (
-    wait_for_test,
+    wait_for,
 )
 
 from nose.tools import (
@@ -108,7 +108,7 @@ def find_parents_by_jquery(browser, selector):
 
 
 @step(r'There should be an element matching \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def check_element_by_selector(self, selector):
     """Assert an element exists matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
@@ -116,7 +116,7 @@ def check_element_by_selector(self, selector):
 
 
 @step(r'There should not be an element matching \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def check_no_element_by_selector(self, selector):
     """Assert an element does not exist matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
@@ -131,15 +131,15 @@ def wait_for_element_by_selector(self, selector, seconds):
     period.
     """
     # pylint:disable=unexpected-keyword-arg
-    # wait_for_test decorator parses the argument
-    wait_for_test(
+    # wait_for decorator parses the argument
+    wait_for(
         lambda: assert_true(find_elements_by_jquery(world.browser, selector)),
         timeout=int(seconds),
     )
 
 
 @step(r'There should be exactly (\d+) elements matching \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def count_elements_exactly_by_selector(self, number, selector):
     """
     Assert n elements exist matching the given selector.
@@ -149,7 +149,7 @@ def count_elements_exactly_by_selector(self, number, selector):
 
 
 @step(r'I fill in \$\("(.*?)"\) with "(.*?)"$')
-@wait_for_test
+@wait_for
 def fill_in_by_selector(self, selector, value):
     """Fill in the form element matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -158,7 +158,7 @@ def fill_in_by_selector(self, selector, value):
 
 
 @step(r'I submit \$\("(.*?)"\)')
-@wait_for_test
+@wait_for
 def submit_by_selector(self, selector):
     """Submit the form matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -166,7 +166,7 @@ def submit_by_selector(self, selector):
 
 
 @step(r'I check \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def check_by_selector(self, selector):
     """Check the checkbox matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -175,7 +175,7 @@ def check_by_selector(self, selector):
 
 
 @step(r'I click \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def click_by_selector(self, selector):
     """Click the element matching the CSS selector."""
     # No need for separate button press step with selector style.
@@ -184,7 +184,7 @@ def click_by_selector(self, selector):
 
 
 @step(r'I follow the link \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def follow_link_by_selector(self, selector):
     """
     Navigate to the href of the element matching the CSS selector.
@@ -197,7 +197,7 @@ def follow_link_by_selector(self, selector):
 
 
 @step(r'\$\("(.*?)"\) should be selected$')
-@wait_for_test
+@wait_for
 def is_selected_by_selector(self, selector):
     """Assert the option matching the CSS selector is selected."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -205,7 +205,7 @@ def is_selected_by_selector(self, selector):
 
 
 @step(r'I select \$\("(.*?)"\)$')
-@wait_for_test
+@wait_for
 def select_by_selector(self, selector):
     """Select the option matching the CSS selector."""
     option = find_element_by_jquery(world.browser, selector)

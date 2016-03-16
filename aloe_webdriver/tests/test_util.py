@@ -21,7 +21,6 @@ from aloe_webdriver.util import (
     find_field_by_name,
     option_in_select,
     wait_for,
-    wait_for_test,
 )
 
 # pylint:disable=missing-docstring
@@ -77,26 +76,13 @@ class TestUtil(unittest.TestCase):
         assert option_in_select(world.browser, 'Favorite Colors:', 'ฟ้า')
 
     def test_wait_for(self):
-        counter = [0]
-
-        @wait_for
-        def lazy_function(i):
-            counter[0] += 1
-            return counter[0] > i
-
-        # pylint:disable=unexpected-keyword-arg
-        # wait_for decorator parses the argument
-        assert not lazy_function(10, timeout=1)
-        assert lazy_function(5, timeout=1)
-
-    def test_wait_for_test(self):
         """
-        Test that wait_for_test retries on assertion errors.
+        Test that wait_for retries on assertion errors.
         """
 
         start_time = time()
 
-        @wait_for_test
+        @wait_for
         def seconds_passed(seconds):
             """
             Test that at least the given number of seconds passed since the
