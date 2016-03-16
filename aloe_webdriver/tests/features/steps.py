@@ -7,6 +7,7 @@ import socketserver
 import threading
 from contextlib import contextmanager
 from http.server import SimpleHTTPRequestHandler
+from time import sleep
 
 try:
     reload
@@ -51,6 +52,16 @@ class TestRequestHandler(SimpleHTTPRequestHandler):
 
         return SimpleHTTPRequestHandler.translate_path(
             self, '/' + pages_dir + path)
+
+    def do_GET(self):
+        """
+        Artificially slow down the response to make sure there are no race
+        conditions.
+        """
+
+        sleep(0.5)
+
+        return SimpleHTTPRequestHandler.do_GET(self)
 
     def log_message(self, *args, **kwargs):
         """Turn off logging."""

@@ -52,6 +52,14 @@ class TestSteps(FeatureTest):
         """
 
     @feature()
+    def test_ajax_action(self):
+        """
+        Given I visit test page "link_page"
+        When I click "Load content with AJAX"
+        Then I should see "Loaded with AJAX"
+        """
+
+    @feature()
     def test_I_see_a_form(self):
         """
         When I visit test page "basic_page"
