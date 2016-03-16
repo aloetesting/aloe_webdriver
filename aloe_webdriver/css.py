@@ -8,7 +8,7 @@ See :ref:`good-bdd`.
 .. note::
 
     Be aware these steps require jQuery_. If jQuery_ is not present it will be
-    added (v1.10).
+    added (v1.12).
 
 .. _jQuery: https://jquery.com/
 """
@@ -57,7 +57,7 @@ def load_script(browser, url):
     sleep(1)
 
 
-JQUERY = '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'
+JQUERY = '//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'
 
 
 def load_jquery(func):
