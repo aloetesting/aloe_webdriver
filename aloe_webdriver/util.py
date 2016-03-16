@@ -221,13 +221,13 @@ class ElementSelector(object):
 
 def element_id_by_label(browser, label):
     """
-    Return an :class:`ElementSelector` for the element referenced by a `label`s
-    ``for`` attribute. The label must be visible.
+    The ID of an element referenced by a `label`s ``for`` attribute. The label
+    must be visible.
 
     :param browser: ``world.browser``
-    :param label: label text to return the referenced element for.
+    :param label: label text to return the referenced element for
 
-    Returns: an :class:`ElementSelector`
+    Returns: ``for`` attribute value
     """
     label = ElementSelector(browser,
                             str('//label[contains(., %s)]' %
