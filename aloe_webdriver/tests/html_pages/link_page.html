@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>A Basic Link Page</title>
+    <meta charset="utf-8" />
+    <title>A Basic Link Page</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
 <body id="index" class="home">
     <div id="somediv">Page o link!</div>
     <a href="link_dest.html">Next Page</a>
+    <a href="#" id="load_with_ajax">Load content with AJAX</a>
+    <script>
+        $('#load_with_ajax').click(function () {
+            $.ajax({
+                url: '/ajax_target.html',
+                success: function (data) {
+                    $('#somediv').html(data);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

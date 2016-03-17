@@ -8,7 +8,7 @@ See :ref:`good-bdd`.
 .. note::
 
     Be aware these steps require jQuery_. If jQuery_ is not present it will be
-    added (v1.10).
+    added (v1.12).
 
 .. _jQuery: https://jquery.com/
 """
@@ -37,12 +37,6 @@ from selenium.common.exceptions import WebDriverException
 # pylint:disable=no-member
 
 
-@wait_for
-def wait_for_elem_selector(browser, sel):
-    """Wait until the element specified by jQuery selector appears."""
-    return find_elements_by_jquery(browser, sel)
-
-
 def load_script(browser, url):
     """Ensure that JavaScript at a given URL is available to the browser."""
     if browser.current_url.startswith('file:'):
@@ -57,7 +51,7 @@ def load_script(browser, url):
     sleep(1)
 
 
-JQUERY = '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'
+JQUERY = '//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'
 
 
 def load_jquery(func):
@@ -99,7 +93,7 @@ def find_elements_by_jquery(browser, selector):
 def find_element_by_jquery(browser, selector):
     """Find a single HTML element using jQuery-style selectors."""
     elements = find_elements_by_jquery(browser, selector)
-    assert_true(len(elements) > 0)
+    assert_true(len(elements) == 1)
     return elements[0]
 
 
@@ -114,6 +108,7 @@ def find_parents_by_jquery(browser, selector):
 
 
 @step(r'There should be an element matching \$\("(.*?)"\)$')
+@wait_for
 def check_element_by_selector(self, selector):
     """Assert an element exists matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
@@ -121,6 +116,7 @@ def check_element_by_selector(self, selector):
 
 
 @step(r'There should not be an element matching \$\("(.*?)"\)$')
+@wait_for
 def check_no_element_by_selector(self, selector):
     """Assert an element does not exist matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
@@ -134,14 +130,13 @@ def wait_for_element_by_selector(self, selector, seconds):
     Assert an element exists matching the given selector within the given time
     period.
     """
-    # pylint:disable=unexpected-keyword-arg
-    # wait_for decorator parses the argument
-    elems = wait_for_elem_selector(
-        world.browser, selector, timeout=int(seconds))
-    assert_true(elems)
+    wait_for(
+        lambda: assert_true(find_elements_by_jquery(world.browser, selector)),
+    )(timeout=int(seconds))
 
 
 @step(r'There should be exactly (\d+) elements matching \$\("(.*?)"\)$')
+@wait_for
 def count_elements_exactly_by_selector(self, number, selector):
     """
     Assert n elements exist matching the given selector.
@@ -151,6 +146,7 @@ def count_elements_exactly_by_selector(self, number, selector):
 
 
 @step(r'I fill in \$\("(.*?)"\) with "(.*?)"$')
+@wait_for
 def fill_in_by_selector(self, selector, value):
     """Fill in the form element matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -159,6 +155,7 @@ def fill_in_by_selector(self, selector, value):
 
 
 @step(r'I submit \$\("(.*?)"\)')
+@wait_for
 def submit_by_selector(self, selector):
     """Submit the form matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -166,6 +163,7 @@ def submit_by_selector(self, selector):
 
 
 @step(r'I check \$\("(.*?)"\)$')
+@wait_for
 def check_by_selector(self, selector):
     """Check the checkbox matching the CSS selector."""
     elem = find_element_by_jquery(world.browser, selector)
@@ -174,6 +172,7 @@ def check_by_selector(self, selector):
 
 
 @step(r'I click \$\("(.*?)"\)$')
+@wait_for
 def click_by_selector(self, selector):
     """Click the element matching the CSS selector."""
     # No need for separate button press step with selector style.
@@ -182,6 +181,7 @@ def click_by_selector(self, selector):
 
 
 @step(r'I follow the link \$\("(.*?)"\)$')
+@wait_for
 def follow_link_by_selector(self, selector):
     """
     Navigate to the href of the element matching the CSS selector.
@@ -194,14 +194,15 @@ def follow_link_by_selector(self, selector):
 
 
 @step(r'\$\("(.*?)"\) should be selected$')
+@wait_for
 def is_selected_by_selector(self, selector):
     """Assert the option matching the CSS selector is selected."""
-    # No need for separate button press step with selector style.
     elem = find_element_by_jquery(world.browser, selector)
     assert_true(elem.is_selected())
 
 
 @step(r'I select \$\("(.*?)"\)$')
+@wait_for
 def select_by_selector(self, selector):
     """Select the option matching the CSS selector."""
     option = find_element_by_jquery(world.browser, selector)

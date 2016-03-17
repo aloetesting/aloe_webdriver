@@ -221,13 +221,13 @@ class ElementSelector(object):
 
 def element_id_by_label(browser, label):
     """
-    Return an :class:`ElementSelector` for the element referenced by a `label`s
-    ``for`` attribute. The label must be visible.
+    The ID of an element referenced by a `label`s ``for`` attribute. The label
+    must be visible.
 
     :param browser: ``world.browser``
-    :param label: label text to return the referenced element for.
+    :param label: label text to return the referenced element for
 
-    Returns: an :class:`ElementSelector`
+    Returns: ``for`` attribute value
     """
     label = ElementSelector(browser,
                             str('//label[contains(., %s)]' %
@@ -291,7 +291,7 @@ def find_field_with_value(browser, field, value):
 def find_option(browser, select_name, option_name):
     # First, locate the select
     select_box = find_field(browser, 'select', select_name)
-    assert select_box
+    assert select_box, "Cannot find a '{}' select.".format(select_name)
 
     # Now locate the option
     option_box = find_field(select_box, 'option', option_name)
@@ -439,7 +439,7 @@ def option_in_select(browser, select_name, option):
     """
 
     select = find_field(browser, 'select', select_name)
-    assert select
+    assert select, "Cannot find a '{}' select.".format(select_name)
 
     try:
         return select.find_element_by_xpath(str(
@@ -448,27 +448,32 @@ def option_in_select(browser, select_name, option):
         return None
 
 
+TIMEOUT = 15
+CHECK_EVERY = 0.2
+
+
 def wait_for(func):
     """
-    A decorator to invoke a function periodically until it returns a truthy
-    value.
+    A decorator to invoke a function, retrying on assertion errors for a
+    specified time interval.
 
     Adds a kwarg `timeout` to `func` which is a number of seconds to try
     for (default 15).
     """
 
     def wrapped(*args, **kwargs):
-        timeout = kwargs.pop('timeout', 15)
+        timeout = kwargs.pop('timeout', TIMEOUT)
 
         start = time()
-        result = None
 
-        while time() - start < timeout:
-            result = func(*args, **kwargs)
-            if result:
-                break
-            sleep(0.2)
-
-        return result
+        while True:
+            try:
+                return func(*args, **kwargs)
+            except AssertionError:
+                if time() - start < timeout:
+                    sleep(CHECK_EVERY)
+                    continue
+                else:
+                    raise
 
     return wrapped

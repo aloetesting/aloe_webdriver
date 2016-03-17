@@ -6,12 +6,13 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
+import os
 import unittest
+from time import time
 
 from selenium import webdriver
 
 from aloe import world
-from aloe_webdriver.tests.base import PAGES
 from aloe_webdriver.util import (
     find_button,
     find_field,
@@ -31,7 +32,11 @@ class TestUtil(unittest.TestCase):
         world.browser = webdriver.Firefox()
 
     def setUp(self):
-        world.browser.get(PAGES['basic_page'])
+        world.browser.get(
+            'file://' +
+            os.path.join(os.path.dirname(__file__),
+                         'html_pages', 'basic_page.html')
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -71,14 +76,27 @@ class TestUtil(unittest.TestCase):
         assert option_in_select(world.browser, 'Favorite Colors:', 'ฟ้า')
 
     def test_wait_for(self):
-        counter = [0]
+        """
+        Test that wait_for retries on assertion errors.
+        """
+
+        start_time = time()
 
         @wait_for
-        def lazy_function(i):
-            counter[0] += 1
-            return counter[0] > i
+        def seconds_passed(seconds):
+            """
+            Test that at least the given number of seconds passed since the
+            start of the test.
+            """
+
+            assert time() - start_time >= seconds
+            return True
 
         # pylint:disable=unexpected-keyword-arg
         # wait_for decorator parses the argument
-        assert not lazy_function(10, timeout=1)
-        assert lazy_function(5, timeout=1)
+
+        with self.assertRaises(AssertionError):
+            seconds_passed(3, timeout=1)
+
+        start_time = time()
+        assert seconds_passed(3, timeout=5)
