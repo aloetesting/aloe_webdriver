@@ -130,12 +130,9 @@ def wait_for_element_by_selector(self, selector, seconds):
     Assert an element exists matching the given selector within the given time
     period.
     """
-    # pylint:disable=unexpected-keyword-arg
-    # wait_for decorator parses the argument
     wait_for(
         lambda: assert_true(find_elements_by_jquery(world.browser, selector)),
-        timeout=int(seconds),
-    )
+    )(timeout=int(seconds))
 
 
 @step(r'There should be exactly (\d+) elements matching \$\("(.*?)"\)$')

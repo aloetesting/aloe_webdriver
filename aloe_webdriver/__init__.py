@@ -205,13 +205,11 @@ def should_see_id_in_seconds(self, element_id, timeout):
     Assert an element with the given ``id`` is visible within n seconds.
     """
 
-    # pylint:disable=unexpected-keyword-arg
-    # wait_for decorator parses the argument
     wait_for(lambda: assert_true(ElementSelector(
         world.browser,
         'id("%s")' % element_id,
         filter_displayed=True,
-    )), timeout=int(timeout))
+    )))(timeout=int(timeout))
 
 
 @step('I should see an element with id of "([^"]*)"$')
@@ -290,12 +288,9 @@ def should_see_in_seconds(self, text, timeout):
     it might cross several HTML nodes. No determination is made between
     block and inline nodes. Whitespace can be affected.
     """
-    # pylint:disable=unexpected-keyword-arg
-    # wait_for decorator parses the argument
     wait_for(
         lambda: assert_true(contains_content(world.browser, text)),
-        timeout=int(timeout),
-    )
+    )(timeout=int(timeout))
 
 
 @step('I should see "([^"]+)"$')
