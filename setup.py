@@ -2,8 +2,6 @@
 Setup script.
 """
 
-__version__ = '0.4.6'
-
 from setuptools import setup, find_packages
 
 if __name__ == '__main__':
@@ -13,7 +11,7 @@ if __name__ == '__main__':
             open('README.md') as readme:
         setup(
             name='aloe_webdriver',
-            version=__version__,
+            use_scm_version=True,
             description='Selenium webdriver extension for Aloe',
             author=", ".join((
                 'Alexey Kotlyarov',
@@ -38,6 +36,8 @@ if __name__ == '__main__':
 
             packages=find_packages(),
             include_package_data=True,
+
+            setup_requires=['setuptools_scm'],
 
             install_requires=requirements.readlines(),
 
