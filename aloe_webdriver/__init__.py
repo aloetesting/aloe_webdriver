@@ -385,7 +385,7 @@ def fill_in_textfield(self, field_name, value):
                                field_name)
 
     assert_true(field,
-                "Cannot find a field named '{}'.".format(value))
+                "Cannot find a field named '{}'.".format(field_name))
 
     if date_field:
         field.send_keys(Keys.DELETE)
