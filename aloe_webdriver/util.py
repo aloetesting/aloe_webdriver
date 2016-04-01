@@ -464,12 +464,19 @@ def wait_for(func):
     def wrapped(*args, **kwargs):
         timeout = kwargs.pop('timeout', TIMEOUT)
 
-        start = time()
+        start = None
 
         while True:
             try:
                 return func(*args, **kwargs)
             except AssertionError:
+                # The function took some time to test the assertion, however,
+                # the result might correspond to the state of the world at any
+                # point in time, perhaps earlier than the timeout. Therefore,
+                # start counting time from the first assertion fail, not from
+                # before the function was called.
+                if not start:
+                    start = time()
                 if time() - start < timeout:
                     sleep(CHECK_EVERY)
                     continue

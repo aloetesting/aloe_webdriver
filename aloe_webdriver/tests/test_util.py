@@ -8,7 +8,7 @@ from __future__ import absolute_import
 
 import os
 import unittest
-from time import time
+from time import sleep, time
 
 from selenium import webdriver
 
@@ -75,6 +75,10 @@ class TestUtil(unittest.TestCase):
         assert option_in_select(world.browser, 'Favorite Colors:', 'Blue')
         assert option_in_select(world.browser, 'Favorite Colors:', 'ฟ้า')
 
+
+class TestWaitFor(unittest.TestCase):
+    """Test wait_for."""
+
     def test_wait_for(self):
         """
         Test that wait_for retries on assertion errors.
@@ -100,3 +104,30 @@ class TestUtil(unittest.TestCase):
 
         start_time = time()
         assert seconds_passed(3, timeout=5)
+
+    def test_slow_function(self):
+        """
+        Test that wait_for still waits for the required number of seconds if the
+        wrapped function takes a long time to execute.
+        """
+
+        start_time = time()
+
+        @wait_for
+        def slow_seconds_passed(seconds):
+            """
+            Test that at least the given number of seconds passed since the
+            start of the test.
+
+            Delay the response to simulate a computationally expensive test.
+            """
+
+            result = time() - start_time >= seconds
+            sleep(7)
+            assert result
+            return True
+
+        # pylint:disable=unexpected-keyword-arg
+        # wait_for decorator parses the argument
+
+        assert slow_seconds_passed(3, timeout=5)
