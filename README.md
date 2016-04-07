@@ -52,5 +52,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [aloe]: http://aloe.readthedocs.org/
 [cucumber_watir]: https://github.com/napcs/cucumber_watir
 [gherkin]: https://cucumber.io/
-[documentation]: http://aloe.readthedocs.org/projects/aloe_webdriver/en/latest/
+[documentation]: http://aloe.readthedocs.org/projects/aloe-webdriver/
 [lettuce_webdriver]: https://github.com/bbangert/lettuce_webdriver
