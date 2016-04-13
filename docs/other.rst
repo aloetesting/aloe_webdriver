@@ -74,12 +74,3 @@ CSS Selectors
     import aloe_webdriver.css
 
 .. automodule:: aloe_webdriver.css
-
-Screenshots
-===========
-
-.. code-block:: python
-
-    import aloe_webdriver.screenshot
-
-.. automodule:: aloe_webdriver.screenshot
