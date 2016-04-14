@@ -2,6 +2,14 @@
 Test saving screenshots after failed steps.
 """
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+# pylint:disable=redefined-builtin,unused-wildcard-import,wildcard-import
+from builtins import *
+# pylint:enable=redefined-builtin,unused-wildcard-import,wildcard-import
+
 import re
 import os
 from glob import iglob
@@ -22,18 +30,24 @@ class TestScreenshots(FeatureTest):
                 os.unlink(filename)
 
     def setUp(self):
-        """Register the failed screenshot steps."""
+        """Enable the hooks for taking screenshots."""
+
+        super().setUp()
 
         self.cleanup_screenshots()
 
-        import aloe_webdriver.screenshot_failed
+        # This environment variable controls whether the screenshot hooks are
+        # registered in tests/features/steps.py
+        os.environ['TAKE_SCREENSHOTS'] = '1'
 
     def tearDown(self):
-        """Remove all the registered hooks."""
+        """Remove all the screenshot files."""
 
-        CALLBACK_REGISTRY.clear(priority_class=PriorityClass.USER)
+        del os.environ['TAKE_SCREENSHOTS']
 
         self.cleanup_screenshots()
+
+        super().tearDown()
 
     def file_name(self,
                   extension,
@@ -53,7 +67,7 @@ class TestScreenshots(FeatureTest):
             'failed_{feature}_{scenario_index}_{scenario}.{extension}'.format(
                 feature=re.sub(r'\W', '_', feature),
                 scenario_index=scenario_index if scenario else 0,
-                scenario=scenario or "Background",
+                scenario=re.sub(r'\W', '_', scenario or "Background"),
                 extension=extension,
             )
 
@@ -79,15 +93,15 @@ Scenario: This scenario fails
         feature = os.path.relpath(result.tests_run[0])
 
         assert not os.path.exists(
-            self.file_name('.png', feature, 1, "This scenario succeeds")), \
+            self.file_name('png', feature, 1, "This scenario succeeds")), \
             "Successful scenario should not be screenshotted."
         assert not os.path.exists(
-            self.file_name('.html', feature, 1, "This scenario succeeds")), \
+            self.file_name('html', feature, 1, "This scenario succeeds")), \
             "Successful scenario page source should not be saved."
 
         assert os.path.exists(
-            self.file_name('.png', feature, 2, "This scenario fails")), \
+            self.file_name('png', feature, 2, "This scenario fails")), \
             "Failed scenario should be screenshotted."
         assert os.path.exists(
-            self.file_name('.html', feature, 2, "This scenario fails")), \
+            self.file_name('html', feature, 2, "This scenario fails")), \
             "Failed scenario page source should be saved."
