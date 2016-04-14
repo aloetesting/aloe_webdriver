@@ -1,7 +1,31 @@
 """
 Hooks to save screenshots and HTML source of the pages when tests fail.
 
-Assumes a browser instance is stored in `world.browser`.
+Assumes a browser instance is stored in ``world.browser``.
+
+Whenever a step fails, the screen shot and the HTML source of the page
+displayed in the browser are saved to the current directory. The file names
+include the feature file name, scenario number and name and, if applicable,
+the example number.
+
+Consider the following feature:
+
+.. code-block:: gherkin
+
+    # features/account.feature
+    Feature: Account management
+
+        Scenario: Log in
+            Given I open the site
+            And I enter username and password
+            And I press "Log in"
+            Then I should see "Logged in"
+
+If there will be no "Logged in" text when expected, screenshot and the page
+source will be saved to, respectively::
+
+    failed_features_account_feature_1_Log_in.png
+    failed_features_account_feature_1_Log_in.html
 """
 
 from __future__ import unicode_literals
