@@ -88,7 +88,7 @@ def take_screenshot(self):
         scenario_name=scenario_name,
         outline_index=outline_index_str,
     )
-    base_name = re.sub(r'\W', '_', base_name)
+    base_name = re.sub(r'\W', '_', base_name, flags=re.UNICODE)
 
     world.browser.save_screenshot('{}.png'.format(base_name))
 
