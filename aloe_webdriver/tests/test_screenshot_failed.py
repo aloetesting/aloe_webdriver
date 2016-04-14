@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Test saving screenshots after failed steps.
 """
@@ -102,6 +103,33 @@ Scenario: This scenario fails
         assert os.path.exists(
             self.file_name('png', feature, 2, "This scenario fails")), \
             "Failed scenario should be screenshotted."
+        with open(self.file_name('html', feature, 2, "This scenario fails")) \
+                as page_source:
+            self.assertIn("<title>A Basic Page</title>", page_source.read(),
+                          "Failed scenario page source should be saved.")
+
+    def test_failed_background(self):
+        """Test that failure of a background step is recorded."""
+
+        feature_string = """
+# language: zh-CN
+功能: 背景失败
+
+    背景:
+        当I visit test page "basic_page"
+        那么I should see "A unicorn"
+
+    场景: 必须有场景
+        那么I should see "Hello there"
+"""
+
+        result = self.run_feature_string(feature_string)
+        feature = os.path.relpath(result.tests_run[0])
+
         assert os.path.exists(
-            self.file_name('html', feature, 2, "This scenario fails")), \
-            "Failed scenario page source should be saved."
+            self.file_name('png', feature, 0, "背景")), \
+            "Failed background should be screenshotted."
+        with open(self.file_name('html', feature, 0, "背景")) \
+                as page_source:
+            self.assertIn("<title>A Basic Page</title>", page_source.read(),
+                          "Failed background page source should be saved.")

@@ -4,6 +4,14 @@ Hooks to save screenshots and HTML source of the pages when tests fail.
 Assumes a browser instance is stored in `world.browser`.
 """
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+# pylint:disable=redefined-builtin,unused-wildcard-import,wildcard-import
+from builtins import *
+# pylint:enable=redefined-builtin,unused-wildcard-import,wildcard-import
+
 import re
 import os
 
@@ -28,8 +36,7 @@ def take_screenshot(self):
         scenario_index = \
             self.scenario.feature.scenarios.index(self.scenario) + 1
     except AttributeError:
-        # FIXME: localize
-        scenario_name = "Background"
+        scenario_name = self.background.keyword
         scenario_index = 0
 
     base_name = FORMAT.format(
