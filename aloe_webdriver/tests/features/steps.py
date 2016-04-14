@@ -28,7 +28,7 @@ import aloe_webdriver.css
 reload(aloe_webdriver)
 reload(aloe_webdriver.css)
 
-if os.environ['TAKE_SCREENSHOTS']:
+if os.environ.get('TAKE_SCREENSHOTS'):
     # Only register the screenshot steps if asked to
     import aloe_webdriver.screenshot_failed
     reload(aloe_webdriver.screenshot_failed)
