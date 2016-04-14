@@ -15,7 +15,6 @@ import re
 import os
 from glob import iglob
 
-from aloe.registry import CALLBACK_REGISTRY, PriorityClass
 from aloe.testing import FeatureTest, in_directory
 
 
@@ -50,27 +49,46 @@ class TestScreenshots(FeatureTest):
 
         super().tearDown()
 
-    def file_name(self,
-                  extension,
-                  feature,
-                  scenario_index=None,
-                  scenario=None):
+    def feature_name(self, test_result):
         """
-        The name of the file that ought to be created when a scenario fails.
+        The feature file name as visible in the failed screenshot/page source
+        file name.
 
-        :param extension: File extension, such as 'html' or 'png'
-        :param feature: Feature file name that the scenario belongs to
-        :param scenario_index: 1-based index of the scenario
-        :param scenario: Scenario name; if not given, assume background
+        Needed because the feature will be put in a temporary file with a
+        different name each time.
+
+        :param test_result: Result of running the feature
         """
 
-        return \
-            'failed_{feature}_{scenario_index}_{scenario}.{extension}'.format(
-                feature=re.sub(r'\W', '_', feature),
-                scenario_index=scenario_index if scenario else 0,
-                scenario=re.sub(r'\W', '_', scenario or "Background"),
-                extension=extension,
-            )
+        feature_filename = os.path.relpath(test_result.tests_run[0])
+        return re.sub(r'\W', '_', feature_filename)
+
+    def show_files(self):
+        """
+        Print all the file names matching the screenshot/page source pattern in
+        the directory.
+        """
+
+        for filename in iglob('failed_*'):
+            print(filename)
+
+    def assert_file_present(self, filename, message):
+        """Assert a file exists."""
+
+        if os.path.exists(filename):
+            return
+
+        self.show_files()
+        raise AssertionError(message)
+
+    def assert_file_absent(self, filename, message):
+        """Assert a file does not exist."""
+
+        if not os.path.exists(filename):
+            return
+
+        self.show_files()
+        raise AssertionError(message)
 
     def test_failed_screenshots(self):
         """Test that failed tests screenshots and page source are recorded."""
@@ -88,22 +106,22 @@ Scenario: This scenario fails
 """
 
         result = self.run_feature_string(feature_string)
+        feature = self.feature_name(result)
 
-        # Feature will be put in a temporary file, find out its name as it will
-        # be used as the base of the screenshot names
-        feature = os.path.relpath(result.tests_run[0])
-
-        assert not os.path.exists(
-            self.file_name('png', feature, 1, "This scenario succeeds")), \
+        self.assert_file_absent(
+            'failed_{}_1_This_scenario_succeeds.png'.format(feature),
             "Successful scenario should not be screenshotted."
-        assert not os.path.exists(
-            self.file_name('html', feature, 1, "This scenario succeeds")), \
+        )
+        self.assert_file_absent(
+            'failed_{}_1_This_scenario_succeeds.html'.format(feature),
             "Successful scenario page source should not be saved."
+        )
 
-        assert os.path.exists(
-            self.file_name('png', feature, 2, "This scenario fails")), \
+        self.assert_file_present(
+            'failed_{}_2_This_scenario_fails.png'.format(feature),
             "Failed scenario should be screenshotted."
-        with open(self.file_name('html', feature, 2, "This scenario fails")) \
+        )
+        with open('failed_{}_2_This_scenario_fails.html'.format(feature)) \
                 as page_source:
             self.assertIn("<title>A Basic Page</title>", page_source.read(),
                           "Failed scenario page source should be saved.")
@@ -124,12 +142,44 @@ Scenario: This scenario fails
 """
 
         result = self.run_feature_string(feature_string)
-        feature = os.path.relpath(result.tests_run[0])
+        feature = self.feature_name(result)
 
-        assert os.path.exists(
-            self.file_name('png', feature, 0, "背景")), \
+        self.assert_file_present(
+            'failed_{}_0_背景.png'.format(feature),
             "Failed background should be screenshotted."
-        with open(self.file_name('html', feature, 0, "背景")) \
-                as page_source:
+        )
+        with open('failed_{}_0_背景.html'.format(feature)) as page_source:
             self.assertIn("<title>A Basic Page</title>", page_source.read(),
                           "Failed background page source should be saved.")
+
+    def test_failed_examples(self):
+        """Test that failure in an example is recorded."""
+
+        feature_string = """
+Feature: Test screenshots on examples
+
+Scenario Outline: Succeeds sometimes
+    When I visit test page "basic_page"
+    Then I should see "<text>"
+
+    Examples:
+        | text        |
+        | Hello there |
+        | A unicorn   |
+"""
+
+        result = self.run_feature_string(feature_string)
+        feature = self.feature_name(result)
+
+        self.assert_file_absent(
+            'failed_{}_1_Succeeds_sometimes_1.png'.format(feature),
+            "Successful example should not be screenshotted."
+        )
+        self.assert_file_present(
+            'failed_{}_1_Succeeds_sometimes_2.png'.format(feature),
+            "Failed example should be screenshotted."
+        )
+        with open('failed_{}_1_Succeeds_sometimes_2.html'.format(feature)) \
+                as page_source:
+            self.assertIn("<title>A Basic Page</title>", page_source.read(),
+                          "Failed example page source should be saved.")
