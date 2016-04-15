@@ -239,6 +239,15 @@ class TestSteps(FeatureTest):
         """
 
     @feature()
+    def test_press_of_input_button(self):
+        """
+        Given I visit test page "basic_page"
+        Then I should not see 'You pressed an input button'
+        When I press "Reveal"
+        Then I should see 'You pressed an input button'
+        """
+
+    @feature()
     def test_submit_only(self):
         """
         When I visit test page "basic_page"
