@@ -264,3 +264,31 @@ class TestSteps(FeatureTest):
         Then the browser's URL should contain "bio="
         And the browser's URL should contain "user="
         """
+
+    @feature()
+    def test_switch_frame_by_id(self):
+        """
+        When I visit test page "frame_page"
+        Then I should see "This is the main page content"
+        And I should not see "This is the frame content"
+        When I switch to the frame with id "frame_id"
+        Then I should not see "This is the main page content"
+        And I should see "This is the frame content"
+        When I switch back to the main view
+        Then I should see "This is the main page content"
+        And I should not see "This is the frame content"
+        """
+
+    @feature()
+    def test_switch_frame_by_class(self):
+        """
+        When I visit test page "frame_page"
+        Then I should see "This is the main page content"
+        And I should not see "This is the frame content"
+        When I switch to the frame with class "frame_class"
+        Then I should not see "This is the main page content"
+        And I should see "This is the frame content"
+        When I switch back to the main view
+        Then I should see "This is the main page content"
+        And I should not see "This is the frame content"
+        """

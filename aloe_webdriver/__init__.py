@@ -801,9 +801,16 @@ def press_by_tooltip(self, tooltip):
 
 
 @step(r'I switch to the frame with id "([^"]*)"')
-def switch_to_frame(self, frame):
+def switch_to_frame_with_id(self, frame):
     """Swap Selenium's context to the given frame or iframe."""
     elem = world.browser.find_element_by_id(frame)
+    world.browser.switch_to.frame(elem)
+
+
+@step(r'I switch to the frame with class "([^"]*)"')
+def switch_to_frame_with_class(self, frame):
+    """Swap Selenium's context to the given frame or iframe."""
+    elem = world.browser.find_element_by_class_name(frame)
     world.browser.switch_to.frame(elem)
 
 
