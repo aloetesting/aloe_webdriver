@@ -39,23 +39,13 @@ from builtins import *
 import re
 import os
 
-from aloe import after, before, world
+from aloe import after, world
 
 # Pylint cannot infer the attributes on world
 # pylint:disable=no-member
 
 
 FORMAT = 'failed_{feature_file}_{scenario_index}_{scenario_name}{outline_index}'
-
-
-@before.each_example
-def reset_example_count(scenario, outlines, steps):
-    """Count the scenario outline index for taking screenshots."""
-
-    if outlines:
-        world.outline_index = scenario.outlines.index(outlines) + 1
-    else:
-        world.outline_index = None
 
 
 @after.each_step
@@ -77,10 +67,11 @@ def take_screenshot(self):
         scenario_name = self.background.keyword
         scenario_index = 0
 
-    if world.outline_index is None:
+    if self.outline is None:
         outline_index_str = ''
     else:
-        outline_index_str = '_{}'.format(world.outline_index)
+        outline_index = self.scenario.outlines.index(self.outline) + 1
+        outline_index_str = '_{}'.format(outline_index)
 
     base_name = FORMAT.format(
         feature_file=os.path.relpath(self.feature.filename),
