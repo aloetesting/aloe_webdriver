@@ -62,5 +62,11 @@
         <label for="hidden_username">Username:</label>
         <input type="text" name="hidden_user" id="hidden_username" />
     </div>
+
+    <div style="display: none" id="input_button_reveal">
+      <span>You pressed an input button</span>
+    </div>
+    <input type="button" value="Reveal" onclick="getElementById('input_button_reveal').style.display='block'" />
+
 </body>
 </html>

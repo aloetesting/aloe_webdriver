@@ -241,11 +241,20 @@ def field_xpath(field, attribute):
     """
     Field helper functions to locate select, textarea, and the other
     types of input fields (text, checkbox, radio)
+
+    :param field: One of the values 'select', 'textarea', 'option', or
+    'button-element' to match a corresponding HTML element (and to
+    match a <button> in the case of 'button-element'). Otherwise a
+    type to match an <input> element with a type=<field> attribute.
+
+    :param attribute: An attribute to be matched against, or 'value'
+    to match against the content within element being matched.
     """
     if field in ['select', 'textarea']:
         xpath = './/{field}[@{attr}=%s]'
 
-    elif field == 'button':
+    elif field == 'button-element':
+        field = 'button'
         if attribute == 'value':
             xpath = './/{field}[contains(., %s)]'
         else:
@@ -264,13 +273,20 @@ def find_button(browser, value):
     """
     Find a button with the given value.
 
-    Searches for `submit`, `reset`, `button` and `image` buttons.
+    Searches for the following different kinds of buttons:
+
+        <input type="submit">
+        <input type="reset">
+        <input type="button">
+        <input type="image">
+        <button>
 
     Returns: an :class:`ElementSelector`
     """
     field_types = (
         'submit',
         'reset',
+        'button-element',
         'button',
         'image',
     )
@@ -394,7 +410,7 @@ def find_field_by_value(browser, field_type, name):
     )
 
     # sort by shortest first (most closely matching)
-    if field_type == 'button':
+    if field_type == 'button-element':
         elems = sorted(elems, key=lambda elem: len(elem.text))
     else:
         elems = sorted(elems,
