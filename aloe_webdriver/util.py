@@ -253,6 +253,12 @@ def field_xpath(field, attribute):
     if field in ['select', 'textarea']:
         xpath = './/{field}[@{attr}=%s]'
 
+    elif field == 'button-role':
+        if attribute == 'value':
+            xpath = './/*[@role="button"][contains(., %s)]'
+        else:
+            xpath = './/*[@role="button"][@{attr}=%s]'
+
     elif field == 'button-element':
         field = 'button'
         if attribute == 'value':
@@ -280,6 +286,7 @@ def find_button(browser, value):
         <input type="button">
         <input type="image">
         <button>
+        <{a,p,div,span,...} role="button">
 
     Returns: an :class:`ElementSelector`
     """
@@ -289,6 +296,7 @@ def find_button(browser, value):
         'button-element',
         'button',
         'image',
+        'button-role',
     )
 
     return reduce(
@@ -410,7 +418,7 @@ def find_field_by_value(browser, field_type, name):
     )
 
     # sort by shortest first (most closely matching)
-    if field_type == 'button-element':
+    if field_type == 'button-element' or field_type == 'button-role':
         elems = sorted(elems, key=lambda elem: len(elem.text))
     else:
         elems = sorted(elems,

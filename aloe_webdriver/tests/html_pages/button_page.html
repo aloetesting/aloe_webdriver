@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>A page with a variety of buttons</title>
+</head>
+<body>
+    <p>Look at all these buttons!</p>
+
+    <input type="submit" name="submit_button" value="Submit button"
+           onclick="reveal('You pressed the submit button')" />
+    <input type="reset" name="reset_button" value="Reset button"
+           onclick="reveal('You pressed the reset button')" />
+    <input type="button" name="input_button" value="Input button"
+           onclick="reveal('You pressed the input button')" />
+    <input type="image" name="image_button" src="green.png"
+           onclick="reveal('You pressed the image button')" />
+    <button name="button_element"
+           onclick="reveal('You pressed the button element')">
+           Button element</button>
+    <a role="button" name="anchor_button" href="#"
+           style="background-color: lightgray"
+           onclick="reveal('You pressed the anchor button')">
+           Anchor button</a>
+    <div role="button" name="div_button"
+           style="display: inline; background-color: lightgray"
+           onclick="reveal('You pressed the div button')">
+           Div button</div>
+    <span role="button" name="span_button"
+           style="background-color: lightgray"
+           onclick="reveal('You pressed the span button')">
+           Span button</span>
+    <p role="button" name="paragraph_button"
+           style="background-color: lightgray"
+           onclick="reveal('You pressed the paragraph button')">
+           Paragraph button</p>
+    <script>
+        function reveal(text) {
+            result = document.getElementById('result');
+            result.innerHTML = text;
+        }
+    </script>
+    <span id="result"></span>
+</body>
+</html>
