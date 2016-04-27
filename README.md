@@ -49,8 +49,8 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-[aloe]: http://aloe.readthedocs.org/
+[aloe]: http://aloe.readthedocs.io/
 [cucumber_watir]: https://github.com/napcs/cucumber_watir
 [gherkin]: https://cucumber.io/
-[documentation]: http://aloe.readthedocs.org/projects/aloe-webdriver/
+[documentation]: http://aloe.readthedocs.io/projects/aloe-webdriver/
 [lettuce_webdriver]: https://github.com/bbangert/lettuce_webdriver

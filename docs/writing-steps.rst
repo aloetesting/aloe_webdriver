@@ -46,7 +46,7 @@ also makes it easier if you ever change the login process.
         step.behave_as('And I click on the "Submit" button')
         step.behave_as('Then I should log into the system')
 
-.. _selenium: http://selenium-python.readthedocs.org/
+.. _selenium: http://selenium-python.readthedocs.io/
 
 Step Writing Utilities
 ----------------------
