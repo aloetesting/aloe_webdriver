@@ -12,12 +12,13 @@ from builtins import str
 
 import operator
 from copy import copy
+from functools import wraps
 from time import time, sleep
 
 try:
     reduce
 except NameError:
-    from functools import reduce  # pylint:disable=redefined-builtin
+    from functools import reduce  # pylint:disable=redefined-builtin,ungrouped-imports
 
 from selenium.common.exceptions import NoSuchElementException
 
@@ -485,6 +486,7 @@ def wait_for(func):
     for (default 15).
     """
 
+    @wraps(func)
     def wrapped(*args, **kwargs):
         timeout = kwargs.pop('timeout', TIMEOUT)
 
