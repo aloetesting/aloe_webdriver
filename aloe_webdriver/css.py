@@ -23,12 +23,6 @@ from aloe_webdriver.util import (
     wait_for,
 )
 
-from nose.tools import (
-    assert_equal,
-    assert_false,
-    assert_true,
-)
-
 from selenium.common.exceptions import WebDriverException
 
 # pylint:disable=missing-docstring
@@ -93,7 +87,10 @@ def find_elements_by_jquery(browser, selector):
 def find_element_by_jquery(browser, selector):
     """Find a single HTML element using jQuery-style selectors."""
     elements = find_elements_by_jquery(browser, selector)
-    assert_true(len(elements) == 1)
+    if not elements:
+        raise AssertionError("No matching element found.")
+    if len(elements) > 1:
+        raise AssertionError("Multiple matching elements found.")
     return elements[0]
 
 
@@ -112,7 +109,8 @@ def find_parents_by_jquery(browser, selector):
 def check_element_by_selector(self, selector):
     """Assert an element exists matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_true(elems)
+    if not elems:
+        raise AssertionError("Expected matching elements, none found.")
 
 
 @step(r'There should not be an element matching \$\("(.*?)"\)$')
@@ -120,7 +118,9 @@ def check_element_by_selector(self, selector):
 def check_no_element_by_selector(self, selector):
     """Assert an element does not exist matching the given selector."""
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_false(elems)
+    if elems:
+        raise AssertionError("Expected no matching elements, found {}.".format(
+            len(elems)))
 
 
 @step(r'There should be an element matching \$\("(.*?)"\) '
@@ -130,9 +130,13 @@ def wait_for_element_by_selector(self, selector, seconds):
     Assert an element exists matching the given selector within the given time
     period.
     """
-    wait_for(
-        lambda: assert_true(find_elements_by_jquery(world.browser, selector)),
-    )(timeout=int(seconds))
+
+    def assert_element_present():
+        """Assert an element matching the given selector exists."""
+        if not find_elements_by_jquery(world.browser, selector):
+            raise AssertionError("Expected a matching element.")
+
+    wait_for(assert_element_present)(timeout=int(seconds))
 
 
 @step(r'There should be exactly (\d+) elements matching \$\("(.*?)"\)$')
@@ -142,7 +146,10 @@ def count_elements_exactly_by_selector(self, number, selector):
     Assert n elements exist matching the given selector.
     """
     elems = find_elements_by_jquery(world.browser, selector)
-    assert_equal(len(elems), int(number))
+    number = int(number)
+    if len(elems) != number:
+        raise AssertionError("Expected {} elements, found {}".format(
+            number, len(elems)))
 
 
 @step(r'I fill in \$\("(.*?)"\) with "(.*?)"$')
@@ -198,7 +205,8 @@ def follow_link_by_selector(self, selector):
 def is_selected_by_selector(self, selector):
     """Assert the option matching the CSS selector is selected."""
     elem = find_element_by_jquery(world.browser, selector)
-    assert_true(elem.is_selected())
+    if not elem.is_selected():
+        raise AssertionError("Element expected to be selected.")
 
 
 @step(r'I select \$\("(.*?)"\)$')
@@ -207,9 +215,12 @@ def select_by_selector(self, selector):
     """Select the option matching the CSS selector."""
     option = find_element_by_jquery(world.browser, selector)
     selectors = find_parents_by_jquery(world.browser, selector)
-    assert_true(len(selectors) > 0)
+    if not selectors:
+        raise AssertionError("No parent element found for the option.")
     selector = selectors[0]
     selector.click()
     sleep(0.3)
     option.click()
-    assert_true(option.is_selected())
+    if not option.is_selected():
+        raise AssertionError(
+            "Option should have become selected after clicking it.")
