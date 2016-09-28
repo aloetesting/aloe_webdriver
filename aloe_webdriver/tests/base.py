@@ -2,6 +2,7 @@
 Base functions for tests.
 """
 
+import os
 from functools import wraps
 
 from aloe.testing import in_directory
@@ -28,7 +29,7 @@ def feature(fails=False):
         """
 
         @wraps(func)
-        @in_directory('tests')
+        @in_directory(os.path.dirname(__file__))
         def inner(self):
             """Run the scenario from docstring."""
 
