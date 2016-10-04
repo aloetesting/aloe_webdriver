@@ -68,5 +68,15 @@
     </div>
     <input type="button" value="Reveal" onclick="getElementById('input_button_reveal').style.display='block'" />
 
+    <div style="display:none" id="delayed">
+        <p id="delayed_p">Time passed.</p>
+        <p id="delayed_id">Time passed.</p>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+        window.setTimeout(function () {
+            document.getElementById('delayed').style.display = 'block';
+            document.getElementById('delayed_id').id = 'changed_id';
+        }, 10000);
+    </script>
 </body>
 </html>

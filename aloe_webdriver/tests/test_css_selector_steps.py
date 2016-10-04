@@ -10,12 +10,45 @@ class TestCSS(FeatureTest):
 
     @feature()
     def test_css_match(self):
-        # pylint:disable=line-too-long
         """
         When I visit test page "basic_page"
-        Then There should be an element matching $("textarea[name='bio']")
+        Then there should be an element matching $("textarea[name='bio']")
         """
-        # pylint:enable=line-too-long
+
+    @feature(fails=True)
+    def test_css_match_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then there should be an element matching $("textarea[name='fail']")
+        """
+
+    @feature()
+    def test_css_no_match(self):
+        """
+        When I visit test page "basic_page"
+        Then there should not be an element matching $("textarea[name='fail']")
+        """
+
+    @feature(fails=True)
+    def test_css_no_match_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then there should not be an element matching $("textarea[name='bio']")
+        """
+
+    @feature()
+    def test_css_count(self):
+        """
+        When I visit test page "basic_page"
+        Then there should be exactly 2 elements matching $("select")
+        """
+
+    @feature(fails=True)
+    def test_css_count_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then there should be exactly 4 elements matching $("select")
+        """
 
     @feature()
     def test_forms(self):
@@ -23,4 +56,49 @@ class TestCSS(FeatureTest):
         When I visit test page "basic_page"
         Then I fill in $("input[name='user']") with "A test string"
         And I check $("input[value='Bike']")
+        And I select $("option[value='green']")
+        And I select $("option[value='green']")
+        Then $("option[value='green']") should be selected
+        And I submit $("form")
         """
+
+    @feature(fails=True)
+    def test_select_failure(self):
+        """
+        When I visit test page "basic_page"
+        And I select $("option[value='magenta']")
+        """
+
+    @feature(fails=True)
+    def test_selected_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then $("option[value='black']") should be selected
+        """
+
+    @feature()
+    def test_link(self):
+        """
+        Given I visit test page "link_page"
+        And I see "Page o link"
+        When I follow the link $("a[href='link_dest.html']")
+        Then I should be at "http://0.0.0.0:7755/link_dest.html"
+        """
+
+    @feature()
+    def test_delayed_selector(self):
+        (
+            '''When I visit test page "basic_page"'''
+            "\n"
+            """Then there should be an element matching """
+            """$("p[id='changed_id']") within 15 seconds"""
+        )
+
+    @feature(fails=True)
+    def test_delayed_selector_failure(self):
+        (
+            '''When I visit test page "basic_page"'''
+            "\n"
+            """Then there should be an element matching """
+            """$("p[id='changed_id']") within 5 seconds"""
+        )

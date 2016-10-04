@@ -301,3 +301,31 @@ class TestSteps(FeatureTest):
         Then I should see "This is the main page content"
         And I should not see "This is the frame content"
         """
+
+    @feature()
+    def test_delayed_id(self):
+        """
+        When I visit test page "basic_page"
+        Then I should see an element with id of "delayed_p" within 15 seconds
+        """
+
+    @feature()
+    def test_delayed_text(self):
+        """
+        When I visit test page "basic_page"
+        Then I should see "Time passed" within 15 seconds
+        """
+
+    @feature(fails=True)
+    def test_delayed_id_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then I should see an element with id of "delayed_p" within 5 seconds
+        """
+
+    @feature(fails=True)
+    def test_delayed_text_failure(self):
+        """
+        When I visit test page "basic_page"
+        Then I should see "Time passed" within 5 seconds
+        """
