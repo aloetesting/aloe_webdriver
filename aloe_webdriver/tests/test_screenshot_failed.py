@@ -18,7 +18,7 @@ from glob import iglob
 from aloe.testing import FeatureTest, in_directory
 
 
-@in_directory('tests')
+@in_directory(os.path.dirname(__file__))
 class TestScreenshots(FeatureTest):
     """Test saving screenshots after failed steps."""
 

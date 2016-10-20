@@ -23,14 +23,6 @@ from aloe_webdriver.util import (
     string_literal,
 )
 
-from nose.tools import (
-    assert_equal,
-    assert_false,
-    assert_in,
-    assert_not_in,
-    assert_true,
-)
-
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.keys import Keys
@@ -82,21 +74,33 @@ def visit(self, url):
 @wait_for
 def url_should_be(self, url):
     """Assert the absolute URL of the browser is as provided."""
-    assert_equal(url, world.browser.current_url)
+
+    if world.browser.current_url != url:
+        raise AssertionError(
+            "Browser URL expected to be {!r}, got {!r}.".format(
+                url, world.browser.current_url))
 
 
 @step('''The browser's URL should contain "([^"]*)"$''')
 @wait_for
 def url_should_contain(self, url):
     """Assert the absolute URL of the browser contains the provided."""
-    assert_in(url, world.browser.current_url)
+
+    if url not in world.browser.current_url:
+        raise AssertionError(
+            "Browser URL expected to contain {!r}, got {!r}.".format(
+                url, world.browser.current_url))
 
 
 @step('''The browser's URL should not contain "([^"]*)"$''')
 @wait_for
 def url_should_not_contain(self, url):
     """Assert the absolute URL of the browser does not contain the provided."""
-    assert_not_in(url, world.browser.current_url)
+
+    if url in world.browser.current_url:
+        raise AssertionError(
+            "Browser URL expected not to contain {!r}, got {!r}.".format(
+                url, world.browser.current_url))
 
 
 @step(r'The page title should be "([^"]*)"')
@@ -106,7 +110,11 @@ def page_title(self, title):
     """
     Assert the page title matches the given text.
     """
-    assert_equal(world.browser.title, title)
+
+    if world.browser.title != title:
+        raise AssertionError(
+            "Page title expected to be {!r}, got {!r}.".format(
+                title, world.browser.title))
 
 # Links #####################################################################
 
@@ -129,11 +137,13 @@ def click(self, name):
 def should_see_link(self, link_url):
     """Assert a link with the provided URL is visible on the page."""
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         str('//a[@href="%s"]' % link_url),
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected link not found.")
 
 
 @step('I should see a link to "([^"]*)" with the url "([^"]*)"$')
@@ -142,11 +152,13 @@ def should_see_link(self, link_url):
 def should_see_link_text(self, link_text, link_url):
     """Assert a link with the provided text points to the provided URL."""
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         str('//a[@href="%s"][./text()="%s"]' % (link_url, link_text)),
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected link not found.")
 
 
 @step('I should see a link that contains the text "([^"]*)" and '
@@ -159,12 +171,14 @@ def should_include_link_text(self, link_text, link_url):
     Assert a link containing the provided text points to the provided URL.
     """
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         str('//a[@href="%s"][contains(., %s)]' %
             (link_url, string_literal(link_text))),
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected link not found.")
 
 
 # ID based checks ###########################################################
@@ -178,12 +192,14 @@ def element_contains(self, element_id, value):
     Assert provided content is contained within an element found by ``id``.
     """
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         str('id("{id}")[contains(., "{value}")]'.format(
             id=element_id, value=value)),
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected element not found.")
 
 
 @step('The element with id of "([^"]*)" does not contain "([^"]*)"$')
@@ -196,7 +212,8 @@ def element_not_contains(self, element_id, value):
     elem = world.browser.find_elements_by_xpath(str(
         'id("{id}")[contains(., "{value}")]'.format(
             id=element_id, value=value)))
-    assert_false(elem)
+    assert not elem, \
+        "Expected element not to contain the given text."
 
 
 @step(r'I should see an element with id of "([^"]*)" within (\d+) seconds?$')
@@ -205,11 +222,16 @@ def should_see_id_in_seconds(self, element_id, timeout):
     Assert an element with the given ``id`` is visible within n seconds.
     """
 
-    wait_for(lambda: assert_true(ElementSelector(
-        world.browser,
-        'id("%s")' % element_id,
-        filter_displayed=True,
-    )))(timeout=int(timeout))
+    def check_element():
+        """Check for the element with the given id."""
+
+        assert ElementSelector(
+            world.browser,
+            'id("%s")' % element_id,
+            filter_displayed=True,
+        ), "Expected element with given id."
+
+    wait_for(check_element)(timeout=int(timeout))
 
 
 @step('I should see an element with id of "([^"]*)"$')
@@ -219,11 +241,13 @@ def should_see_id(self, element_id):
     Assert an element with the given ``id`` is visible.
     """
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         'id("%s")' % element_id,
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected element with given id.")
 
 
 @step('I should not see an element with id of "([^"]*)"$')
@@ -233,11 +257,13 @@ def should_not_see_id(self, element_id):
     Assert an element with the given ``id`` is not visible.
     """
 
-    assert_false(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         'id("%s")' % element_id,
         filter_displayed=True,
-    ))
+    )
+    if elements:
+        raise AssertionError("Expected element with given id to be absent.")
 
 
 @step(r'Element with id "([^"]*)" should be focused')
@@ -254,7 +280,9 @@ def element_focused(self, id_):
 
     focused = world.browser.switch_to.active_element
 
-    assert_true(elem == focused)
+    # Elements don't have __ne__ defined, cannot test for inequality
+    if not elem == focused:
+        raise AssertionError("Expected element to be focused.")
 
 
 @step(r'Element with id "([^"]*)" should not be focused')
@@ -272,7 +300,8 @@ def element_not_focused(self, id_):
     focused = world.browser.switch_to.active_element
 
     # Elements don't have __ne__ defined, cannot test for inequality
-    assert_false(elem == focused)
+    if elem == focused:
+        raise AssertionError("Expected element not to be focused.")
 
 
 # Text ######################################################################
@@ -288,9 +317,14 @@ def should_see_in_seconds(self, text, timeout):
     it might cross several HTML nodes. No determination is made between
     block and inline nodes. Whitespace can be affected.
     """
-    wait_for(
-        lambda: assert_true(contains_content(world.browser, text)),
-    )(timeout=int(timeout))
+
+    def check_element():
+        """Check for an element with the given content."""
+
+        assert contains_content(world.browser, text), \
+            "Expected element with the given text."
+
+    wait_for(check_element)(timeout=int(timeout))
 
 
 @step('I should see "([^"]+)"$')
@@ -306,7 +340,8 @@ def should_see(self, text):
     it might cross several HTML nodes. No determination is made between
     block and inline nodes. Whitespace can be affected.
     """
-    assert_true(contains_content(world.browser, text))
+    if not contains_content(world.browser, text):
+        raise AssertionError("Expected content not found.")
 
 
 @step('I should not see "([^"]+)"$')
@@ -319,7 +354,8 @@ def should_not_see(self, text):
     Be aware that because of the caveats of the positive case, the text MAY
     be on the screen in a slightly different form.
     """
-    assert_false(contains_content(world.browser, text))
+    if contains_content(world.browser, text):
+        raise AssertionError("Content unexpectedly found.")
 
 
 # Forms #####################################################################
@@ -332,11 +368,13 @@ def see_form(self, url):
     Assert the existence of a HTML form that submits to the given URL.
     """
 
-    assert_true(ElementSelector(
+    elements = ElementSelector(
         world.browser,
         str('//form[@action="%s"]' % url),
         filter_displayed=True,
-    ))
+    )
+    if not elements:
+        raise AssertionError("Expected form not found.")
 
 
 DATE_FIELDS = (
@@ -384,8 +422,9 @@ def fill_in_textfield(self, field_name, value):
                                TEXT_FIELDS,
                                field_name)
 
-    assert_true(field,
-                "Cannot find a field named '{}'.".format(field_name))
+    if not field:
+        raise AssertionError(
+            "Cannot find a field named '{}'.".format(field_name))
 
     if date_field:
         field.send_keys(Keys.DELETE)
@@ -403,8 +442,9 @@ def press_button(self, value):
     Click the button with the given label.
     """
     button = find_button(world.browser, value)
-    assert_true(button,
-                "Cannot find a button named '{}'.".format(value))
+    if not button:
+        raise AssertionError(
+            "Cannot find a button named '{}'.".format(value))
     button.click()
 
 
@@ -423,7 +463,9 @@ def click_on_label(self, label):
         str('//label[normalize-space(text())=%s]' % string_literal(label)),
         filter_displayed=True,
     )
-    assert_true(elem, "Cannot find a label with text '{}'.".format(label))
+    if not elem:
+        raise AssertionError(
+            "Cannot find a label with text '{}'.".format(label))
     elem.click()
 
 
@@ -437,9 +479,15 @@ def input_has_value(self, field_name, value):
     text_field = find_any_field(world.browser,
                                 DATE_FIELDS + TEXT_FIELDS,
                                 field_name)
-    assert_false(text_field is False,
-                 'Can not find a field named "%s"' % field_name)
-    assert_equal(text_field.get_attribute('value'), value)
+    if text_field is False:
+        raise AssertionError(
+            "Can not find a field named {!r}.".format(field_name))
+
+    actual = text_field.get_attribute('value')
+    if actual != value:
+        raise AssertionError(
+            "Field value expected to be {!r}, got {!r}.".format(
+                value, actual))
 
 
 @step(r'I submit the only form')
@@ -517,7 +565,7 @@ def assert_checked_checkbox(self, value):
     """Assert the checkbox with label (recommended), name or id is checked."""
     check_box = find_field(world.browser, 'checkbox', value)
     assert check_box, "Cannot find checkbox '{}'.".format(value)
-    assert_true(check_box.is_selected())
+    assert check_box.is_selected(), "Check box should be selected."
 
 
 @step('The "([^"]*)" checkbox should not be checked$')
@@ -529,7 +577,7 @@ def assert_not_checked_checkbox(self, value):
     """
     check_box = find_field(world.browser, 'checkbox', value)
     assert check_box, "Cannot find checkbox '{}'.".format(value)
-    assert_false(check_box.is_selected())
+    assert not check_box.is_selected(), "Check box should not be selected."
 
 
 # Selects ###################################################################
@@ -593,7 +641,7 @@ def assert_single_selected(self, option_name, select_name):
     If multiple selections are supported other options may be selected.
     """
     option = find_option(world.browser, select_name, option_name)
-    assert_true(option.is_selected())
+    assert option.is_selected(), "Option should be selected."
 
 
 @step('The following options from "([^"]*?)" should be selected:?$')
@@ -609,12 +657,13 @@ def assert_multi_selected(self, select_name):
     # Check only the options that are specified are selected
     for option in option_elems:
         if option.get_attribute('id') in option_names or \
-           option.get_attribute('name') in option_names or \
-           option.get_attribute('value') in option_names or \
-           option.text in option_names:
-            assert_true(option.is_selected())
+                option.get_attribute('name') in option_names or \
+                option.get_attribute('value') in option_names or \
+                option.text in option_names:
+            assert option.is_selected(), "Option should be selected."
         else:
-            assert_false(option.is_selected())
+            assert not option.is_selected(), \
+                "Option should not be selected."
 
 
 @step(r'I should see option "([^"]*)" in selector "([^"]*)"')
@@ -622,7 +671,8 @@ def assert_multi_selected(self, select_name):
 @wait_for
 def select_contains(self, option, id_):
     """Assert the select contains the given option."""
-    assert_true(option_in_select(world.browser, id_, option) is not None)
+    assert option_in_select(world.browser, id_, option) is not None, \
+        "Selector should have the given option."
 
 
 @step(r'I should not see option "([^"]*)" in selector "([^"]*)"')
@@ -630,7 +680,8 @@ def select_contains(self, option, id_):
 @wait_for
 def select_does_not_contain(self, option, id_):
     """Assert the select does not contain the given option."""
-    assert_true(option_in_select(world.browser, id_, option) is None)
+    assert option_in_select(world.browser, id_, option) is None, \
+        "Selector should not have the given option."
 
 
 # Radios ####################################################################
@@ -657,9 +708,9 @@ def assert_radio_selected(self, value):
     Assert the radio button with the given label (recommended), name or id is
     chosen.
     """
-    box = find_field(world.browser, 'radio', value)
-    assert box, "Cannot find a '{}' radio button.".format(value)
-    assert_true(box.is_selected())
+    radio = find_field(world.browser, 'radio', value)
+    assert radio, "Cannot find a '{}' radio button.".format(value)
+    assert radio.is_selected(), "Radio button should be selected."
 
 
 @step('The "([^"]*)" option should not be chosen$')
@@ -670,9 +721,9 @@ def assert_radio_not_selected(self, value):
     Assert the radio button with the given label (recommended), name or id is
     not chosen.
     """
-    box = find_field(world.browser, 'radio', value)
-    assert box, "Cannot find a '{}' radio button.".format(value)
-    assert_false(box.is_selected())
+    radio = find_field(world.browser, 'radio', value)
+    assert radio, "Cannot find a '{}' radio button.".format(value)
+    assert not radio.is_selected(), "Radio button should not be selected."
 
 
 # Alerts ####################################################################
@@ -715,7 +766,10 @@ def check_alert(self, text):
 
     try:
         alert = Alert(world.browser)
-        assert_equal(alert.text, text)
+        if alert.text != text:
+            raise AssertionError(
+                "Alert text expected to be {!r}, got {!r}.".format(
+                    text, alert.text))
     except WebDriverException:
         # PhantomJS is kinda poor
         pass
@@ -765,7 +819,8 @@ def see_tooltip(self, tooltip):
     N.B. tooltip may not be visible.
     """
 
-    assert_true(find_by_tooltip(world.browser, tooltip))
+    assert find_by_tooltip(world.browser, tooltip), \
+        "Expected element with given tooltip."
 
 
 @step(r'I should not see an element with tooltip "([^"]*)"')
@@ -776,7 +831,8 @@ def no_see_tooltip(self, tooltip):
     Assert an element with the given tooltip (title) is not visible.
     """
 
-    assert_false(find_by_tooltip(world.browser, tooltip))
+    assert not find_by_tooltip(world.browser, tooltip), \
+        "Expected no elements with given tooltip."
 
 
 @step(r'I (?:click|press) the element with tooltip "([^"]*)"')
