@@ -16,12 +16,12 @@ except NameError:
     from importlib import reload
     # pylint:enable=no-name-in-module,redefined-builtin
 
-from selenium import webdriver
-
 from aloe import around, before, step, world
 
 import aloe_webdriver
 import aloe_webdriver.css
+
+from aloe_webdriver.tests.base import create_browser
 
 # This module is reloaded during testing in order to re-register the steps and
 # callbacks. Make sure the modules where the steps are defined are, too.
@@ -38,7 +38,7 @@ if os.environ.get('TAKE_SCREENSHOTS'):
 @contextmanager
 def with_browser():
     """Start a browser for the tests."""
-    world.browser = webdriver.Firefox()
+    world.browser = create_browser()
 
     yield
 

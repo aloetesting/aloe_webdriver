@@ -10,8 +10,6 @@ import os
 import unittest
 from time import sleep, time
 
-from selenium import webdriver
-
 from aloe import world
 from aloe_webdriver.util import (
     find_button,
@@ -23,13 +21,15 @@ from aloe_webdriver.util import (
     wait_for,
 )
 
+from aloe_webdriver.tests.base import create_browser
+
 # pylint:disable=missing-docstring
 
 
 class TestUtil(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        world.browser = webdriver.Firefox()
+        world.browser = create_browser()
 
     def setUp(self):
         world.browser.get(

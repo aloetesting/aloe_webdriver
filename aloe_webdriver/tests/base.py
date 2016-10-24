@@ -5,6 +5,8 @@ Base functions for tests.
 import os
 from functools import wraps
 
+from selenium import webdriver
+
 from aloe.testing import in_directory
 
 
@@ -49,3 +51,9 @@ def feature(fails=False):
         return inner
 
     return outer
+
+
+def create_browser():
+    """Create a Selenium browser for tests."""
+
+    return webdriver.Firefox()
