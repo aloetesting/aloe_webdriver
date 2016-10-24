@@ -42,10 +42,23 @@ def load_script(browser, url):
     document.getElementsByTagName("head")[0].appendChild(script_tag);
     """, url)
 
-    sleep(1)
-
 
 JQUERY = '//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'
+
+
+def is_jquery_not_defined_error(msg):
+    """
+    Check whether the JavaScript error message is due to jQuery not
+    being available.
+    """
+
+    # Firefox: '$ is not defined'
+    # Chrome: 'unknown error: $ is not defined'
+    # PhantomJS: JSON with 'Can't find variable: $'
+    return any(txt in msg for txt in (
+        "$ is not defined",
+        "Can't find variable: $",
+    ))
 
 
 def load_jquery(func):
@@ -65,11 +78,22 @@ def load_jquery(func):
         try:
             return func(browser, *args, **kwargs)
         except WebDriverException as ex:
-            if ex.msg.startswith('$ is not defined'):
-                load_script(browser, JQUERY)
-                return func(browser, *args, **kwargs)
-            else:
+            if not is_jquery_not_defined_error(ex.msg):
                 raise
+
+            load_script(browser, JQUERY)
+
+            @wait_for
+            def jquery_available():
+                """Assert that jQuery has loaded."""
+                try:
+                    return browser.execute_script('return $')
+                except WebDriverException:
+                    raise AssertionError("jQuery is not loaded")
+
+            jquery_available()
+
+            return func(browser, *args, **kwargs)
 
     return wrapped
 
