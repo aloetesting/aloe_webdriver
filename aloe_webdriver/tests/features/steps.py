@@ -105,7 +105,7 @@ def with_test_server():
 @before.each_feature
 def reset_page(feature):
     """Reset the browser before each feature."""
-    world.browser.get('')
+    world.browser.get('about:blank')
 
 
 @step(r'I visit test page "([^"]+)"')
