@@ -82,7 +82,7 @@ class TestCSS(FeatureTest):
         Given I visit test page "link_page"
         And I see "Page o link"
         When I follow the link $("a[href='link_dest.html']")
-        Then I should be at "http://0.0.0.0:7755/link_dest.html"
+        Then I should be at "http://SERVER_HOST:7755/link_dest.html"
         """
 
     @feature()

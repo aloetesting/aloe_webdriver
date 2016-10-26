@@ -40,11 +40,20 @@ def feature(fails=False):
         def inner(self):
             """Run the scenario from docstring."""
 
+            scenario = func.__doc__
+
+            # Make it possible to reference SERVER_HOST in URLs inside
+            # scenarios
+            scenario = scenario.replace(
+                'SERVER_HOST',
+                os.environ.get('SERVER_HOST', '0.0.0.0')
+            )
+
             feature_string = """
             Feature: {name}
             Scenario: {name}
             {scenario_string}
-            """.format(name=func.__name__, scenario_string=func.__doc__)
+            """.format(name=func.__name__, scenario_string=scenario)
 
             result = self.run_feature_string(feature_string)
 

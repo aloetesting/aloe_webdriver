@@ -1,0 +1,18 @@
+#!/bin/sh -e
+# Run a test command with a Selenium Docker image
+# Usage: with_docker_browser chrome|firefox command
+
+BROWSER=$1
+shift
+
+CONTAINER=$(mktemp -u browserXXXXXX)
+
+docker run -d -P --name $CONTAINER selenium/standalone-$BROWSER >/dev/null
+sleep 3  # Give the container time to start
+trap "docker rm -f $CONTAINER >/dev/null" EXIT
+
+export SELENIUM_ADDRESS=$(docker port $CONTAINER 4444)
+export SELENIUM_CAPABILITIES=$BROWSER
+export SERVER_HOST=$(docker inspect -f '{{.NetworkSettings.Gateway}}' $CONTAINER)
+
+"$@"
