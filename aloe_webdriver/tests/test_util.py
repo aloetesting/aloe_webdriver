@@ -31,10 +31,10 @@ class TestUtil(unittest.TestCase):
         world.browser = create_browser()
 
     def setUp(self):
-        with test_server() as server:
+        with test_server() as (_, address):
             world.browser.get(
                 'http://{address[0]}:{address[1]}/{page}.html'.format(
-                    address=server.server_address,
+                    address=address,
                     page='basic_page',
                 )
             )

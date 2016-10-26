@@ -95,11 +95,20 @@ class TestServer(socketserver.TCPServer):
 def test_server():
     """A context manager starting a server for the test pages."""
 
-    server = TestServer(('', 7755), TestRequestHandler)
+    port = 7755
+
+    server = TestServer(('', port), TestRequestHandler)
     server_thread = threading.Thread(target=server.serve_forever)
     server_thread.start()
 
-    yield server
+    # When running the browser in Docker, pass the host address
+    # to allow the container to access the server on the host
+    if 'SERVER_HOST' in os.environ:
+        address = (os.environ['SERVER_HOST'], port)
+    else:
+        address = server.server_address
+
+    yield server, address
 
     server.shutdown()
     server_thread.join()
@@ -109,4 +118,21 @@ def test_server():
 def create_browser():
     """Create a Selenium browser for tests."""
 
-    return webdriver.Firefox()
+    if 'SELENIUM_ADDRESS' in os.environ:
+        address = 'http://{}/wd/hub'.format(os.environ['SELENIUM_ADDRESS'])
+
+        capabilities = {
+            'chrome': webdriver.DesiredCapabilities.CHROME,
+            'firefox': webdriver.DesiredCapabilities.FIREFOX,
+        }
+        try:
+            browser = capabilities[os.environ['SELENIUM_CAPABILITIES']]
+        except KeyError:
+            raise ValueError("Invalid SELENIUM_CAPABILITIES.")
+
+        return webdriver.Remote(
+            address,
+            desired_capabilities=browser,
+        )
+
+    return webdriver.PhantomJS()

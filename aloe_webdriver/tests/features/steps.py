@@ -47,8 +47,9 @@ def with_browser():
 def with_test_server():
     """Start a server for the test pages."""
 
-    with test_server() as server:
+    with test_server() as (server, address):
         world.server = server
+        world.base_address = address
         yield
 
 
@@ -62,6 +63,6 @@ def reset_page(feature):
 def visit_test_page(self, page):
     """Open a test page in the browser."""
     self.when('I visit "http://{address[0]}:{address[1]}/{page}.html"'.format(
-        address=world.server.server_address,
+        address=world.base_address,
         page=page,
     ))
