@@ -3,11 +3,7 @@ Steps for testing.
 """
 
 import os
-import socketserver
-import threading
 from contextlib import contextmanager
-from http.server import SimpleHTTPRequestHandler
-from time import sleep
 
 try:
     reload
@@ -21,7 +17,7 @@ from aloe import around, before, step, world
 import aloe_webdriver
 import aloe_webdriver.css
 
-from aloe_webdriver.tests.base import create_browser
+from aloe_webdriver.tests.base import create_browser, test_server
 
 # This module is reloaded during testing in order to re-register the steps and
 # callbacks. Make sure the modules where the steps are defined are, too.
@@ -46,60 +42,14 @@ def with_browser():
     delattr(world, 'browser')
 
 
-class TestRequestHandler(SimpleHTTPRequestHandler):
-    """A handler serving the test pages."""
-
-    def translate_path(self, path):
-        """Serve the pages directory instead of the current directory."""
-
-        pages_dir = os.path.relpath(
-            os.path.join(os.path.dirname(__file__), '..', '..', 'html_pages'))
-
-        return SimpleHTTPRequestHandler.translate_path(
-            self, '/' + pages_dir + path)
-
-    def do_GET(self):
-        """
-        Artificially slow down the response to make sure there are no race
-        conditions.
-        """
-
-        sleep(0.5)
-
-        return SimpleHTTPRequestHandler.do_GET(self)
-
-    def log_message(self, *args, **kwargs):
-        """Turn off logging."""
-        pass
-
-
-class TestServer(socketserver.TCPServer):
-    """Server for the test pages."""
-
-    allow_reuse_address = True
-
-
-def test_server():
-    """Start a server for the test pages."""
-
-    return TestServer(('', 7755), TestRequestHandler)
-
-
 @around.all
 @contextmanager
 def with_test_server():
     """Start a server for the test pages."""
 
-    world.server = test_server()
-
-    server_thread = threading.Thread(target=world.server.serve_forever)
-    server_thread.start()
-
-    yield
-
-    world.server.shutdown()
-    server_thread.join()
-    world.server.server_close()
+    with test_server() as server:
+        world.server = server
+        yield
 
 
 @before.each_feature

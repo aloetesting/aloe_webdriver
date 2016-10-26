@@ -3,7 +3,12 @@ Base functions for tests.
 """
 
 import os
+import socketserver
+import threading
+from contextlib import contextmanager
 from functools import wraps
+from http.server import SimpleHTTPRequestHandler
+from time import sleep
 
 from selenium import webdriver
 
@@ -51,6 +56,54 @@ def feature(fails=False):
         return inner
 
     return outer
+
+
+class TestRequestHandler(SimpleHTTPRequestHandler):
+    """A handler serving the test pages."""
+
+    def translate_path(self, path):
+        """Serve the pages directory instead of the current directory."""
+
+        pages_dir = os.path.relpath(
+            os.path.join(os.path.dirname(__file__), 'html_pages'))
+
+        return SimpleHTTPRequestHandler.translate_path(
+            self, '/' + pages_dir + path)
+
+    def do_GET(self):
+        """
+        Artificially slow down the response to make sure there are no race
+        conditions.
+        """
+
+        sleep(0.5)
+
+        return SimpleHTTPRequestHandler.do_GET(self)
+
+    def log_message(self, *args, **kwargs):
+        """Turn off logging."""
+        pass
+
+
+class TestServer(socketserver.TCPServer):
+    """Server for the test pages."""
+
+    allow_reuse_address = True
+
+
+@contextmanager
+def test_server():
+    """A context manager starting a server for the test pages."""
+
+    server = TestServer(('', 7755), TestRequestHandler)
+    server_thread = threading.Thread(target=server.serve_forever)
+    server_thread.start()
+
+    yield server
+
+    server.shutdown()
+    server_thread.join()
+    server.server_close()
 
 
 def create_browser():

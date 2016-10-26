@@ -6,7 +6,6 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-import os
 import unittest
 from time import sleep, time
 
@@ -21,7 +20,7 @@ from aloe_webdriver.util import (
     wait_for,
 )
 
-from aloe_webdriver.tests.base import create_browser
+from aloe_webdriver.tests.base import create_browser, test_server
 
 # pylint:disable=missing-docstring
 
@@ -32,11 +31,13 @@ class TestUtil(unittest.TestCase):
         world.browser = create_browser()
 
     def setUp(self):
-        world.browser.get(
-            'file://' +
-            os.path.join(os.path.dirname(__file__),
-                         'html_pages', 'basic_page.html')
-        )
+        with test_server() as server:
+            world.browser.get(
+                'http://{address[0]}:{address[1]}/{page}.html'.format(
+                    address=server.server_address,
+                    page='basic_page',
+                )
+            )
 
     @classmethod
     def tearDownClass(cls):
