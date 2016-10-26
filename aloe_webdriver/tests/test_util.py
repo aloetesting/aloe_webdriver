@@ -48,7 +48,7 @@ class TestUtil(unittest.TestCase):
         assert find_field_by_id(world.browser, 'password', 'pass')
 
     def test_find_by_name(self):
-        assert find_field_by_name(world.browser, 'submit', 'submit')
+        assert find_field_by_name(world.browser, 'submit', 'submit_main')
         assert find_field_by_name(world.browser, 'select', 'car_choice')
         assert find_field_by_name(world.browser, 'textarea', 'bio')
 
@@ -66,7 +66,7 @@ class TestUtil(unittest.TestCase):
         assert find_field(world.browser, 'text', 'ชื่อ:')
 
     def test_find_button(self):
-        assert find_button(world.browser, 'submit')
+        assert find_button(world.browser, 'submit_main')
         assert find_button(world.browser, 'Submit!')
         assert find_button(world.browser, 'submit_tentative')
         assert find_button(world.browser, 'Submit as tentative')
