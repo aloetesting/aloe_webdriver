@@ -73,10 +73,13 @@
         <p id="delayed_id">Time passed.</p>
     </div>
     <script type="text/javascript" charset="utf-8">
-        window.setTimeout(function () {
-            document.getElementById('delayed').style.display = 'block';
-            document.getElementById('delayed_id').id = 'changed_id';
-        }, 10000);
+        function startTimer() {
+            window.setTimeout(function () {
+                document.getElementById('delayed').style.display = 'block';
+                document.getElementById('delayed_id').id = 'changed_id';
+            }, 10000);
+        }
     </script>
+    <input type="button" value="Start timer" onclick="startTimer()" />
 </body>
 </html>

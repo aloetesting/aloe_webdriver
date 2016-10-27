@@ -306,6 +306,7 @@ class TestSteps(FeatureTest):
     def test_delayed_id(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see an element with id of "delayed_p" within 15 seconds
         """
 
@@ -313,6 +314,7 @@ class TestSteps(FeatureTest):
     def test_delayed_text(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see "Time passed" within 15 seconds
         """
 
@@ -320,6 +322,7 @@ class TestSteps(FeatureTest):
     def test_delayed_id_failure(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see an element with id of "delayed_p" within 5 seconds
         """
 
@@ -327,5 +330,6 @@ class TestSteps(FeatureTest):
     def test_delayed_text_failure(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see "Time passed" within 5 seconds
         """

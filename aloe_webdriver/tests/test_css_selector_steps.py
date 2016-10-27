@@ -51,6 +51,14 @@ class TestCSS(FeatureTest):
         """
 
     @feature()
+    def test_css_click(self):
+        """
+        When I visit test page "basic_page"
+        And I click $("input[value='Reveal']")
+        Then I should see "You pressed an input button"
+        """
+
+    @feature()
     def test_forms(self):
         """
         When I visit test page "basic_page"
@@ -90,6 +98,7 @@ class TestCSS(FeatureTest):
         (
             '''When I visit test page "basic_page"'''
             "\n"
+            """And I click $("input[value='Start timer']")\n"""
             """Then there should be an element matching """
             """$("p[id='changed_id']") within 15 seconds"""
         )
@@ -99,6 +108,7 @@ class TestCSS(FeatureTest):
         (
             '''When I visit test page "basic_page"'''
             "\n"
-            """Then there should be an element matching """
-            """$("p[id='changed_id']") within 5 seconds"""
+            """And I click $("input[value='Start timer']")\n"""
+            """And there should be an element matching """
+            """$("p[id='changed_id']") within 1 second"""
         )
