@@ -99,6 +99,13 @@ class TestServer(socketserver.TCPServer):
 
     allow_reuse_address = True
 
+    def get_request(self):
+        """Set a timeout on the request socket."""
+
+        request, addr = socketserver.TCPServer.get_request(self)
+        request.settimeout(2)  # pylint:disable=no-member
+        return request, addr
+
 
 @contextmanager
 def test_server():
