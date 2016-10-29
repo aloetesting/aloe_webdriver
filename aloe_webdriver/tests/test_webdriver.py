@@ -4,7 +4,7 @@ Test Webdriver steps.
 
 from aloe.testing import FeatureTest
 
-from aloe_webdriver.tests.base import feature
+from aloe_webdriver.tests.base import feature, skip_if_browser
 
 # pylint:disable=line-too-long
 
@@ -159,6 +159,7 @@ class TestSteps(FeatureTest):
         And I should not see an element with id of "hidden_text"
         """
 
+    @skip_if_browser('phantomjs', "PhantomJS doesn't support alerts")
     @feature()
     def test_alert_accept(self):
         """
@@ -169,6 +170,7 @@ class TestSteps(FeatureTest):
         And I should see "true"
         """
 
+    @skip_if_browser('phantomjs', "PhantomJS doesn't support alerts")
     @feature()
     def test_alert_dismiss(self):
         """
@@ -223,12 +225,17 @@ class TestSteps(FeatureTest):
         Then input "username" has value "Ricky"
         """
 
+    # Chrome's date fields are in a localized format (e.g. DD-MM-YYYY)
+    @skip_if_browser(
+        'chrome',
+        "Chrome's date fields are in a localized format."
+    )
     @feature()
     def test_date_input(self):
         """
         When I visit test page "basic_page"
-        And I fill in "dob" with "1900/01/01"
-        Then input "dob" has value "1900/01/01"
+        And I fill in "dob" with "1900-01-01"
+        Then input "dob" has value "1900-01-01"
         """
 
     @feature()

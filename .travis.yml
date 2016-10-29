@@ -8,6 +8,7 @@ python:
 env:
 - BROWSER=chrome
 - BROWSER=firefox
+- BROWSER=phantomjs
 services:
 - docker
 install:

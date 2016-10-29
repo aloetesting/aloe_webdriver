@@ -5,6 +5,7 @@ Base functions for tests.
 import os
 import socketserver
 import threading
+import unittest
 from contextlib import contextmanager
 from functools import wraps
 from http.server import SimpleHTTPRequestHandler
@@ -131,6 +132,20 @@ def test_server():
     server.server_close()
 
 
+def browser_type():
+    """Browser type selected for the tests."""
+
+    return os.environ.get('BROWSER_TYPE', 'firefox')
+
+
+def skip_if_browser(browser, message):
+    """Decorator to skip a test with a particular browser type."""
+
+    if browser_type() == browser:
+        return unittest.skip(message)
+    return lambda func: func
+
+
 def create_browser():
     """Create a Selenium browser for tests."""
 
@@ -140,15 +155,22 @@ def create_browser():
         capabilities = {
             'chrome': webdriver.DesiredCapabilities.CHROME,
             'firefox': webdriver.DesiredCapabilities.FIREFOX,
+            'phantomjs': webdriver.DesiredCapabilities.PHANTOMJS,
         }
         try:
-            browser = capabilities[os.environ['SELENIUM_CAPABILITIES']]
+            browser = capabilities[browser_type()]
         except KeyError:
-            raise ValueError("Invalid SELENIUM_CAPABILITIES.")
+            raise ValueError("Invalid BROWSER_TYPE.")
 
         return webdriver.Remote(
             address,
             desired_capabilities=browser,
         )
 
-    return webdriver.PhantomJS()
+    browsers = {
+        'chrome': webdriver.Chrome,
+        'firefox': webdriver.Firefox,
+        'phantomjs': webdriver.PhantomJS,
+    }
+    driver = browsers[browser_type()]
+    return driver()
