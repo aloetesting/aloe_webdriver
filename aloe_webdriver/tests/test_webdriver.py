@@ -225,7 +225,22 @@ class TestSteps(FeatureTest):
         Then input "username" has value "Ricky"
         """
 
-    # Chrome's date fields are in a localized format (e.g. DD-MM-YYYY)
+    # Chrome's date fields expect input in a localized format, for example,
+    # mm/dd/yyyy for en_US (note day and month swapped vis-a-vis ISO format).
+    # The test browser locale is set to en_US.
+
+    @skip_if_browser(
+        ['firefox', 'phantomjs'],
+        "Only Chrome's date fields are in a localized format."
+    )
+    @feature()
+    def test_date_input_localized(self):
+        """
+        When I visit test page "basic_page"
+        And I fill in "dob" with "02141992"
+        Then input "dob" has value "1992-02-14"
+        """
+
     @skip_if_browser(
         'chrome',
         "Chrome's date fields are in a localized format."
@@ -234,8 +249,8 @@ class TestSteps(FeatureTest):
     def test_date_input(self):
         """
         When I visit test page "basic_page"
-        And I fill in "dob" with "1900-01-01"
-        Then input "dob" has value "1900-01-01"
+        And I fill in "dob" with "1992-02-14"
+        Then input "dob" has value "1992-02-14"
         """
 
     @feature()

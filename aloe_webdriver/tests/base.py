@@ -138,10 +138,13 @@ def browser_type():
     return os.environ.get('BROWSER_TYPE', 'firefox')
 
 
-def skip_if_browser(browser, message):
+def skip_if_browser(browsers, message):
     """Decorator to skip a test with a particular browser type."""
 
-    if browser_type() == browser:
+    if not isinstance(browsers, (list, tuple)):
+        browsers = [browsers]
+
+    if browser_type() in browsers:
         return unittest.skip(message)
     return lambda func: func
 
@@ -173,4 +176,12 @@ def create_browser():
         'phantomjs': webdriver.PhantomJS,
     }
     driver = browsers[browser_type()]
-    return driver()
+
+    # Explicitly specify the browser locale for the date input tests to work
+    # regardless of the user's settings
+    old_lc_all = os.environ.get('LC_ALL', '')
+    try:
+        os.environ['LC_ALL'] = 'en_US'
+        return driver()
+    finally:
+        os.environ['LC_ALL'] = old_lc_all
