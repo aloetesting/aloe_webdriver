@@ -4,7 +4,7 @@ Test Webdriver steps.
 
 from aloe.testing import FeatureTest
 
-from aloe_webdriver.tests.base import feature
+from aloe_webdriver.tests.base import feature, skip_if_browser
 
 # pylint:disable=line-too-long
 
@@ -45,8 +45,8 @@ class TestSteps(FeatureTest):
         Given I visit test page "link_page"
         And I see "Page o link"
         When I click "Next Page"
-        Then I should be at "http://0.0.0.0:7755/link_dest.html"
-        And The browser's URL should be "http://0.0.0.0:7755/link_dest.html"
+        Then I should be at "http://SERVER_HOST:7755/link_dest.html"
+        And The browser's URL should be "http://SERVER_HOST:7755/link_dest.html"
         And The browser's URL should not contain "irrelevant things"
         And I should see "Link destination page"
         """
@@ -159,6 +159,7 @@ class TestSteps(FeatureTest):
         And I should not see an element with id of "hidden_text"
         """
 
+    @skip_if_browser('phantomjs', "PhantomJS doesn't support alerts")
     @feature()
     def test_alert_accept(self):
         """
@@ -169,6 +170,7 @@ class TestSteps(FeatureTest):
         And I should see "true"
         """
 
+    @skip_if_browser('phantomjs', "PhantomJS doesn't support alerts")
     @feature()
     def test_alert_dismiss(self):
         """
@@ -223,12 +225,32 @@ class TestSteps(FeatureTest):
         Then input "username" has value "Ricky"
         """
 
+    # Chrome's date fields expect input in a localized format, for example,
+    # mm/dd/yyyy for en_US (note day and month swapped vis-a-vis ISO format).
+    # The test browser locale is set to en_US.
+
+    @skip_if_browser(
+        ['firefox', 'phantomjs'],
+        "Only Chrome's date fields are in a localized format."
+    )
+    @feature()
+    def test_date_input_localized(self):
+        """
+        When I visit test page "basic_page"
+        And I fill in "dob" with "02141992"
+        Then input "dob" has value "1992-02-14"
+        """
+
+    @skip_if_browser(
+        'chrome',
+        "Chrome's date fields are in a localized format."
+    )
     @feature()
     def test_date_input(self):
         """
         When I visit test page "basic_page"
-        And I fill in "dob" with "1900/01/01"
-        Then input "dob" has value "1900/01/01"
+        And I fill in "dob" with "1992-02-14"
+        Then input "dob" has value "1992-02-14"
         """
 
     @feature()
@@ -306,6 +328,7 @@ class TestSteps(FeatureTest):
     def test_delayed_id(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see an element with id of "delayed_p" within 15 seconds
         """
 
@@ -313,6 +336,7 @@ class TestSteps(FeatureTest):
     def test_delayed_text(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see "Time passed" within 15 seconds
         """
 
@@ -320,6 +344,7 @@ class TestSteps(FeatureTest):
     def test_delayed_id_failure(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see an element with id of "delayed_p" within 5 seconds
         """
 
@@ -327,5 +352,6 @@ class TestSteps(FeatureTest):
     def test_delayed_text_failure(self):
         """
         When I visit test page "basic_page"
+        And I press "Start timer"
         Then I should see "Time passed" within 5 seconds
         """

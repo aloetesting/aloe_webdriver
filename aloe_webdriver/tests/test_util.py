@@ -6,11 +6,8 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-import os
 import unittest
 from time import sleep, time
-
-from selenium import webdriver
 
 from aloe import world
 from aloe_webdriver.util import (
@@ -23,20 +20,24 @@ from aloe_webdriver.util import (
     wait_for,
 )
 
+from aloe_webdriver.tests.base import create_browser, test_server
+
 # pylint:disable=missing-docstring
 
 
 class TestUtil(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        world.browser = webdriver.Firefox()
+        world.browser = create_browser()
 
     def setUp(self):
-        world.browser.get(
-            'file://' +
-            os.path.join(os.path.dirname(__file__),
-                         'html_pages', 'basic_page.html')
-        )
+        with test_server() as (_, address):
+            world.browser.get(
+                'http://{address[0]}:{address[1]}/{page}.html'.format(
+                    address=address,
+                    page='basic_page',
+                )
+            )
 
     @classmethod
     def tearDownClass(cls):
@@ -47,7 +48,7 @@ class TestUtil(unittest.TestCase):
         assert find_field_by_id(world.browser, 'password', 'pass')
 
     def test_find_by_name(self):
-        assert find_field_by_name(world.browser, 'submit', 'submit')
+        assert find_field_by_name(world.browser, 'submit', 'submit_main')
         assert find_field_by_name(world.browser, 'select', 'car_choice')
         assert find_field_by_name(world.browser, 'textarea', 'bio')
 
@@ -65,7 +66,7 @@ class TestUtil(unittest.TestCase):
         assert find_field(world.browser, 'text', 'ชื่อ:')
 
     def test_find_button(self):
-        assert find_button(world.browser, 'submit')
+        assert find_button(world.browser, 'submit_main')
         assert find_button(world.browser, 'Submit!')
         assert find_button(world.browser, 'submit_tentative')
         assert find_button(world.browser, 'Submit as tentative')

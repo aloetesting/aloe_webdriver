@@ -46,7 +46,7 @@
             <option value="cyan">ฟ้า</option>
         </select>
 
-        <input type="submit" name="submit" value="Submit!" />
+        <input type="submit" name="submit_main" value="Submit!" />
         <button type="submit" name="submit_tentative">Submit as tentative</button>
 
         <label for="firstname">ชื่อ: </label>
@@ -73,10 +73,13 @@
         <p id="delayed_id">Time passed.</p>
     </div>
     <script type="text/javascript" charset="utf-8">
-        window.setTimeout(function () {
-            document.getElementById('delayed').style.display = 'block';
-            document.getElementById('delayed_id').id = 'changed_id';
-        }, 10000);
+        function startTimer() {
+            window.setTimeout(function () {
+                document.getElementById('delayed').style.display = 'block';
+                document.getElementById('delayed_id').id = 'changed_id';
+            }, 10000);
+        }
     </script>
+    <input type="button" value="Start timer" onclick="startTimer()" />
 </body>
 </html>

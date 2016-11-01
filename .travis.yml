@@ -1,11 +1,16 @@
+sudo: required
+dist: trusty
 language: python
 python:
 - '2.7'
 - '3.4'
 - '3.5'
-before_install:
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
+env:
+- BROWSER=chrome
+- BROWSER=firefox
+- BROWSER=phantomjs
+services:
+- docker
 install:
 - pip install -r requirements.txt
 - pip install -r test_requirements.txt
@@ -14,7 +19,7 @@ script:
 - pep8 .
 - pylint aloe_webdriver setup.py
 - coverage erase
-- coverage run -m unittest -v -b
+- ./tools/with_docker_browser $BROWSER coverage run -m unittest discover -v -b
 - coverage report
 - "./tools/check_installs"
 - make -C docs coverage
@@ -24,7 +29,7 @@ deploy:
   provider: pypi
   user: koterpillar
   password:
-    secure: b/awXsEYkij1/UBekBw39e3+wcImSgh6DmIqz55pP3DzND8ydKQAwExYPrvt2OHOaMYfUH1iokl8HoMnll1ho71Vr3EV4ivpze2xeG2d7Cf+fMWGsQQhN7ZdNuJgZg1jceys4PuHpVipwTVIc3LdJloYkBeb/odI4J8bkfEa+yOfwElQmJ0VDYu3IXJQIccHXmy1W1G0OWYRprhtL9DC3WESPZe4Fv4uhE227WKy1FCLycveRgv5JEtV7qiyysLMbrwg4wSdI2Y9t3wFH7AkRJJY3A1yW2Hgcw/PBOt+NJ3naQm6PJi3zc+E+gU5xrqKSJnnY/v177aOPPLzRXzb3XJjH7UNzPLPQC+sfgIQfg71SUxoexP7q6yMarlS3oaEzkk/Csw/2cCQzcKc4uY3yiP8WY/CwlezZMwD4DYi5RVXc29Yv97bp+xx8ilvraF+ZOoDeRyxI/OD11eKqOlOfn6GA0fBRWbpM7Jg4Rut6X6xQkYOHp8WaCmXZZ6OF9wEgNPvQttFbJf2nF2pDxX0g8vRMOIybXZx1zr6ZNzOkAjdVcxATT9BbWEoBsZ6/FGdLGFKeNg7GzoNZiON7Hu3n0F6m5dF555uTZG1ht6+Q3N2LLQjlrXNQGaSSkn+/oAO11Q06a/5dYwUdZ1C/+win8RNr/RC+SZnUfbi3CknZas=
+    secure: b/awXsEYkij1/UBekBw39e3+wcImSgh6DmIqz55pP3DzNDFix testing8ydKQAwExYPrvt2OHOaMYfUH1iokl8HoMnll1ho71Vr3EV4ivpze2xeG2d7Cf+fMWGsQQhN7ZdNuJgZg1jceys4PuHpVipwTVIc3LdJloYkBeb/odI4J8bkfEa+yOfwElQmJ0VDYu3IXJQIccHXmy1W1G0OWYRprhtL9DC3WESPZe4Fv4uhE227WKy1FCLycveRgv5JEtV7qiyysLMbrwg4wSdI2Y9t3wFH7AkRJJY3A1yW2Hgcw/PBOt+NJ3naQm6PJi3zc+E+gU5xrqKSJnnY/v177aOPPLzRXzb3XJjH7UNzPLPQC+sfgIQfg71SUxoexP7q6yMarlS3oaEzkk/Csw/2cCQzcKc4uY3yiP8WY/CwlezZMwD4DYi5RVXc29Yv97bp+xx8ilvraF+ZOoDeRyxI/OD11eKqOlOfn6GA0fBRWbpM7Jg4Rut6X6xQkYOHp8WaCmXZZ6OF9wEgNPvQttFbJf2nF2pDxX0g8vRMOIybXZx1zr6ZNzOkAjdVcxATT9BbWEoBsZ6/FGdLGFKeNg7GzoNZiON7Hu3n0F6m5dF555uTZG1ht6+Q3N2LLQjlrXNQGaSSkn+/oAO11Q06a/5dYwUdZ1C/+win8RNr/RC+SZnUfbi3CknZas=
   server: https://pypi.python.org/pypi
   on:
     tags: true

@@ -1,0 +1,37 @@
+#!/bin/sh -e
+# Run a test command with a Selenium Docker image
+# Usage: with_docker_browser chrome|firefox|phantomjs command
+
+export BROWSER_TYPE=$1
+shift
+
+CONTAINER=$(mktemp -u browserXXXXXX)
+
+PORT=4444
+COMMAND=
+case $BROWSER_TYPE in
+     firefox)
+         IMAGE=selenium/standalone-firefox
+         ;;
+     chrome)
+         IMAGE=selenium/standalone-chrome
+         ;;
+     phantomjs)
+         IMAGE=wernight/phantomjs
+         PORT=8910
+         COMMAND="phantomjs --webdriver=8910"
+         ;;
+     *)
+         echo "Invalid BROWSER_TYPE" >&2
+         exit 1
+         ;;
+esac
+
+docker run -d -P --name $CONTAINER $IMAGE $COMMAND >/dev/null
+sleep 3  # Give the container time to start
+trap "docker rm -f $CONTAINER >/dev/null" EXIT
+
+export SELENIUM_ADDRESS=$(docker port $CONTAINER $PORT)
+export SERVER_HOST=$(docker inspect -f '{{.NetworkSettings.Gateway}}' $CONTAINER)
+
+"$@"
