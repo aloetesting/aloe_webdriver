@@ -35,4 +35,6 @@ deploy:
     tags: true
     all_branches: true
     python: 3.4
-    condition: '"$TRAVIS_TAG" = "v$(python setup.py --version)" -a "$BROWSER" = phantomjs'
+    condition:
+      - '"$TRAVIS_TAG" = "v$(python setup.py --version)"'
+      - '"$BROWSER" = phantomjs'
