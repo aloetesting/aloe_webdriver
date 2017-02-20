@@ -13,6 +13,8 @@ from builtins import *
 
 import re
 import os
+import shutil
+import tempfile
 from glob import iglob
 
 from aloe.testing import FeatureTest, in_directory
@@ -22,12 +24,18 @@ from aloe.testing import FeatureTest, in_directory
 class TestScreenshots(FeatureTest):
     """Test saving screenshots after failed steps."""
 
+    dir_path = None
+
     def cleanup_screenshots(self):
         """Clean up any screenshots taken."""
 
         for ext in ('png', 'html'):
             for filename in iglob('failed_*.{}'.format(ext)):
                 os.unlink(filename)
+
+        # Delete temporary directory if any.
+        if self.dir_path:
+            shutil.rmtree(self.dir_path)
 
     def setUp(self):
         """Enable the hooks for taking screenshots."""
@@ -44,6 +52,9 @@ class TestScreenshots(FeatureTest):
         """Remove all the screenshot files."""
 
         del os.environ['TAKE_SCREENSHOTS']
+
+        if 'SCREENSHOTS_DIR' in os.environ:
+            del os.environ['SCREENSHOTS_DIR']
 
         self.cleanup_screenshots()
 
@@ -71,6 +82,11 @@ class TestScreenshots(FeatureTest):
 
         for filename in iglob('failed_*'):
             print(filename)
+
+        # List content of temporary directory, if defined.
+        if self.dir_path:
+            for filename in iglob(os.path.join(self.dir_path, '*')):
+                print(filename)
 
     def assert_file_present(self, filename, message):
         """Assert a file exists."""
@@ -183,3 +199,33 @@ Scenario Outline: Succeeds sometimes
                 as page_source:
             self.assertIn("<title>A Basic Page</title>", page_source.read(),
                           "Failed example page source should be saved.")
+
+    def test_failed_screenshots_to_dir(self):
+        """
+        Test failed tests screenshots are saved in the specified directory.
+        """
+
+        feature_string = """
+Feature: Test screenshots on failed steps
+
+Scenario: This scenario fails
+    When I visit test page "basic_page"
+    Then I should see "A unicorn"
+"""
+        self.dir_path = tempfile.mkdtemp()
+        os.environ['SCREENSHOTS_DIR'] = self.dir_path
+        result = self.run_feature_string(feature_string)
+        feature = self.feature_name(result)
+
+        template = 'failed_{}_1_This_scenario_fails.{}'
+        png_file = os.path.join(self.dir_path, template.format(feature, 'png'))
+        html_file = os.path.join(
+            self.dir_path, template.format(feature, 'html'))
+
+        self.assert_file_present(
+            png_file,
+            "Failed scenario should be screenshotted."
+        )
+        with open(html_file) as page_source:
+            self.assertIn("<title>A Basic Page</title>", page_source.read(),
+                          "Failed scenario page source should be saved.")

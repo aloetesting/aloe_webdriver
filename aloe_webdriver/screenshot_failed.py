@@ -26,6 +26,17 @@ source will be saved to, respectively::
 
     failed_features_account_feature_1_Log_in.png
     failed_features_account_feature_1_Log_in.html
+
+To change the directory where the screenshots are saved, override the constant
+``DIRECTORY`` as follows:
+
+.. code-block:: python
+
+    from aloe_webdriver import screenshot_failed
+
+    screenshot_failed.DIRECTORY = '/alternative/directory'
+
+Note that the given directory should already exist.
 """
 
 from __future__ import unicode_literals
@@ -45,6 +56,7 @@ from aloe import after, world
 # pylint:disable=no-member
 
 
+DIRECTORY = ''
 FORMAT = 'failed_{feature_file}_{scenario_index}_{scenario_name}{outline_index}'
 
 
@@ -80,6 +92,7 @@ def take_screenshot(self):
         outline_index=outline_index_str,
     )
     base_name = re.sub(r'\W', '_', base_name, flags=re.UNICODE)
+    base_name = os.path.join(DIRECTORY, base_name)
 
     world.browser.save_screenshot('{}.png'.format(base_name))
 
