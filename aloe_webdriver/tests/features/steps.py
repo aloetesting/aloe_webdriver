@@ -29,6 +29,10 @@ if os.environ.get('TAKE_SCREENSHOTS'):
     import aloe_webdriver.screenshot_failed
     reload(aloe_webdriver.screenshot_failed)
 
+    SCREENSHOTS_DIR = os.environ.get('SCREENSHOTS_DIR')
+    if SCREENSHOTS_DIR:
+        aloe_webdriver.screenshot_failed.DIRECTORY = SCREENSHOTS_DIR
+
 
 @around.all
 @contextmanager
