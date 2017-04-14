@@ -426,7 +426,7 @@ def find_field_by_value(browser, field_type, name):
                        key=lambda elem: len(elem.get_attribute('value')))
 
     if elems:
-        elems = [elems[0]]  # pylint:disable=redefined-variable-type
+        elems = [elems[0]]
 
     return ElementSelector(browser, elements=elems)
 
