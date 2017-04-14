@@ -90,7 +90,7 @@ class TestRequestHandler(SimpleHTTPRequestHandler):
 
         return SimpleHTTPRequestHandler.do_GET(self)
 
-    def log_message(self, *args, **kwargs):
+    def log_message(self, *args, **kwargs):  # pylint:disable=arguments-differ
         """Turn off logging."""
         pass
 

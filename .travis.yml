@@ -5,6 +5,7 @@ python:
 - '2.7'
 - '3.4'
 - '3.5'
+- '3.6'
 env:
 - BROWSER=chrome
 - BROWSER=firefox
@@ -16,7 +17,7 @@ install:
 - pip install -r test_requirements.txt
 - pip install coveralls
 script:
-- pep8 .
+- pycodestyle .
 - pylint aloe_webdriver setup.py
 - coverage erase
 - ./tools/with_docker_browser $BROWSER coverage run -m unittest discover -v -b
