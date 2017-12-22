@@ -1,5 +1,4 @@
 [MASTER]
-load-plugins=pylint_mccabe
 
 [REPORTS]
 output-format=colorized

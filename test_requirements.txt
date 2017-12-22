@@ -2,6 +2,5 @@ aloe_django
 coverage
 pycodestyle
 pylint>=1.7.0
-pylint_mccabe
 setuptools_scm
 Sphinx
