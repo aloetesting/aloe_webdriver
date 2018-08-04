@@ -419,7 +419,7 @@ def find_field_by_value(browser, field_type, name):
     )
 
     # sort by shortest first (most closely matching)
-    if field_type == 'button-element' or field_type == 'button-role':
+    if field_type in ('button-element', 'button-role'):
         elems = sorted(elems, key=lambda elem: len(elem.text))
     else:
         elems = sorted(elems,
