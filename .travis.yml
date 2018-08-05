@@ -28,15 +28,12 @@ script:
 after_success:
 - coveralls
 deploy:
-  provider: pypi
-  user: koterpillar
-  password:
-    secure: "2d850dzeD3LjCLACzG4X4LZP+i+vnmR7zStf5JAYW8oOzJR0zkcwJq91V8EXMkhAmWYhVHureJrOfUaPWFx/wKOfnjEmJdG3Jt02tUBZwZdOKw88oDxUfW9AVp3Qh8aMG44T9mt1yf/3iCsiLbkqgZ3BpIOhzAXYNNl1Se9JSTonhttKpGQpFD0E8/eRtVhHLTPmktQkJXz8H3xdmpjP/GIRC8yFBahz5EHal3JnwCrnd7v+Q8ByCsYOybHTiN3dYBb+3wgYlM26Ur3Ko9ZBJSpM5tR9+i9WISywlm+Rpu40qGP7/25Mhb9C2Gv07J0xgZk+fJoo+keUWOAXT3+TSocFbvbSdYc6PTOTEx1NITJgQmIVOSs+ku159rwCzhotYM5tsw31RgaAaMvAB1zeCPUsVq2gjByK2nDvsg9KIzr7BBxyF6nCUYff18EI6Z9udK6krKCJsZT4yyQ/90dMWVhvNAorc4KWkuR8p2czH8R+Ny0fxqgw8LNl/UVsKBkmyX2J6tZAjuaXl5IkaFWDLkJBGtzn7sg2dvGROXy6wf0jpl6bJevEueqJWOhLyQlGEnh+NCoLPOlxAEl36UzuHX5b7wZmaZkLsFtHD0BLxbjJzex7EtjKr6eqYoIC4Zm7+h/7aKQuZ+y1sFeWaxPNFnzxlxXpb2t85qkPLWLusuo="
-  server: https://pypi.python.org/pypi
+  provider: script
+  script: ./tools/deploy
   on:
     tags: true
     all_branches: true
-    python: 3.4
+    python: 3.6
     condition:
       - '"$TRAVIS_TAG" = "v$(python setup.py --version)"'
       - '"$BROWSER" = phantomjs'
