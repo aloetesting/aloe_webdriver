@@ -22,7 +22,7 @@ if __name__ == '__main__':
             author_email=', '.join((
                 'a@koterpillar.com',
                 'danielle@madeley.id.au',
-                'npilon@gmail.com,',
+                'npilon@gmail.com',
                 'ben@groovie.org',
             )),
             url="https://github.com/aloetesting/aloe_webdriver/",
