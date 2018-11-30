@@ -16,6 +16,7 @@ disable=
     too-few-public-methods,
     too-many-public-methods,
     too-many-lines,
+    unnecessary-pass,
     unused-argument,
     useless-object-inheritance,
     wrong-import-order,
