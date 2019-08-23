@@ -42,7 +42,8 @@ def string_literal(content):
     if '"' in content and "'" in content:
         # there is no way to escape string literal characters in XPath
         raise ValueError("Cannot represent this string in XPath")
-    elif '"' in content:  # if it contains " wrap it in '
+
+    if '"' in content:  # if it contains " wrap it in '
         content = "'%s'" % content
     else:  # wrap it in "
         content = '"%s"' % content
