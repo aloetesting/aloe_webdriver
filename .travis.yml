@@ -5,7 +5,6 @@ python:
 - '3.7'
 - '3.6'
 - '3.5'
-- '3.4'
 - '2.7'
 env:
 - BROWSER=chrome
@@ -34,7 +33,7 @@ deploy:
   on:
     tags: true
     all_branches: true
-    python: 3.6
+    python: 3.7
     condition:
       - '"$TRAVIS_TAG" = "v$(python setup.py --version)"'
       - '"$BROWSER" = phantomjs'
