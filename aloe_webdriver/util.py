@@ -507,7 +507,6 @@ def wait_for(func):
                 if time() - start < timeout:
                     sleep(CHECK_EVERY)
                     continue
-                else:
-                    raise
+                raise
 
     return wrapped
