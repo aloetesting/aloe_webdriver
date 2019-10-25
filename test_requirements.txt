@@ -1,6 +1,7 @@
 aloe_django
 coverage
 pycodestyle
-pylint
+pylint>=1.9.3;python_version<"3"
+pylint>=2.4.3;python_version>="3"
 setuptools_scm
 Sphinx
