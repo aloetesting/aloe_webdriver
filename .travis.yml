@@ -6,7 +6,6 @@ python:
 - '3.7'
 - '3.6'
 - '3.5'
-- '2.7'
 env:
 - BROWSER=chrome
 - BROWSER=firefox
@@ -15,7 +14,6 @@ services:
 - docker
 install:
 - pip install -r requirements.txt
-- sh -c 'if python --version 2>&1 | grep -q "Python 2"; then pip install Django==1.*; fi'
 - pip install -r test_requirements.txt
 - pip install coveralls
 script:

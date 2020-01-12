@@ -2,14 +2,6 @@
 Basic Selenium_ :class:`Webdriver` steps for Aloe_.
 """
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-# pylint:disable=redefined-builtin
-from builtins import str
-# pylint:enable=redefined-builtin
-
 from aloe import step, world
 
 from aloe_webdriver.util import (
