@@ -17,9 +17,6 @@ rm -rf check_install_venv
 virtualenv -p $PYTHON check_install_venv
 . check_install_venv/bin/activate
 
-# Install old Django if using Python 2
-if python --version 2>&1 | grep -q "Python 2"; then pip install Django==1.*; fi
-
 # Install the package
 pip install check_install_dist/*.tar.gz
 
