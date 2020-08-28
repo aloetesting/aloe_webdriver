@@ -621,8 +621,8 @@ def select_multi_items(self, select_name):
             try:
                 select.select_by_visible_text(option)
             except NoSuchElementException as exc:
-                raise AssertionError("Cannot find option: '{}'.".format(option)) \
-                    from exc
+                raise AssertionError(
+                    "Cannot find option: '{}'.".format(option)) from exc
 
 
 @step('The "([^"]*)" option from "([^"]*)" should be selected$')
