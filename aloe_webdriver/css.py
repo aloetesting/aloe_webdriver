@@ -89,7 +89,7 @@ def load_jquery(func):
                 try:
                     return browser.execute_script('return $')
                 except WebDriverException:
-                    raise AssertionError("jQuery is not loaded")
+                    raise AssertionError("jQuery is not loaded") from None
 
             jquery_available()
 

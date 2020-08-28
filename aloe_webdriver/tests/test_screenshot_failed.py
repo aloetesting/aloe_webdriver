@@ -32,7 +32,7 @@ class TestScreenshots(FeatureTest):
     def setUp(self):
         """Enable the hooks for taking screenshots."""
 
-        super(TestScreenshots, self).setUp()
+        super().setUp()
 
         self.cleanup_screenshots()
 
@@ -50,7 +50,7 @@ class TestScreenshots(FeatureTest):
 
         self.cleanup_screenshots()
 
-        super(TestScreenshots, self).tearDown()
+        super().tearDown()
 
     def feature_name(self, test_result):
         """
