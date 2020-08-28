@@ -118,9 +118,9 @@ def click(self, name):
     """Click the link with the provided link text."""
     try:
         elem = world.browser.find_element_by_link_text(name)
-    except NoSuchElementException:
+    except NoSuchElementException as exc:
         raise AssertionError(
-            "Cannot find the link with text '{}'.".format(name))
+            "Cannot find the link with text '{}'.".format(name)) from exc
     elem.click()
 
 
@@ -267,8 +267,9 @@ def element_focused(self, id_):
 
     try:
         elem = world.browser.find_element_by_id(id_)
-    except NoSuchElementException:
-        raise AssertionError("Element with ID '{}' not found.".format(id_))
+    except NoSuchElementException as exc:
+        raise AssertionError("Element with ID '{}' not found.".format(id_)) \
+            from exc
 
     focused = world.browser.switch_to.active_element
 
@@ -286,8 +287,9 @@ def element_not_focused(self, id_):
 
     try:
         elem = world.browser.find_element_by_id(id_)
-    except NoSuchElementException:
-        raise AssertionError("Element with ID '{}' not found.".format(id_))
+    except NoSuchElementException as exc:
+        raise AssertionError("Element with ID '{}' not found.".format(id_)) \
+            from exc
 
     focused = world.browser.switch_to.active_element
 
@@ -618,8 +620,9 @@ def select_multi_items(self, select_name):
         except NoSuchElementException:
             try:
                 select.select_by_visible_text(option)
-            except NoSuchElementException:
-                raise AssertionError("Cannot find option: '{}'.".format(option))
+            except NoSuchElementException as exc:
+                raise AssertionError("Cannot find option: '{}'.".format(option)) \
+                    from exc
 
 
 @step('The "([^"]*)" option from "([^"]*)" should be selected$')

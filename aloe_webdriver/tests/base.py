@@ -163,7 +163,7 @@ def create_browser():
         try:
             browser = capabilities[browser_type()]
         except KeyError:
-            raise ValueError("Invalid BROWSER_TYPE.")
+            raise ValueError("Invalid BROWSER_TYPE.") from None
 
         return webdriver.Remote(
             address,
